@@ -1,13 +1,12 @@
 <template>
   <page-layout :avatar="currUser.avatar">
     <div slot="headerContent">
-      <div class="title">{{welcome.timeFix[lang]}}，{{currUser.name}}，{{welcome.message[lang]}}</div>
-      <div>{{currUser.position[lang]}}</div>
+      <div class="title wel-title">{{welcome.timeFix[lang]}}，{{currUser.name}}，{{welcome.message[lang]}}</div>
     </div>
     <template slot="extra">
       <head-info class="split-right" :title="$t('project')" content="56"/>
       <head-info class="split-right" :title="$t('ranking')" content="8/24"/>
-      <head-info class="split-right" :title="$t('visit')" content="2,223"/>
+      <!-- <head-info class="split-right" :title="$t('visit')" content="2,223"/> -->
     </template>
     <template>
       <a-row style="margin: 0 -12px">
@@ -46,13 +45,10 @@
         <a-col style="padding: 0 12px" :xl="8" :lg="24" :md="24" :sm="24" :xs="24">
           <a-card :title="$t('access')" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
             <div class="item-group">
-              <a>操作一</a>
-              <a>操作二</a>
-              <a>操作三</a>
-              <a>操作四</a>
-              <a>操作五</a>
-              <a>操作六</a>
-              <a-button size="small" type="primary" ghost icon="plus">{{$t('add')}}</a-button>
+              <a>问答审核</a>
+              <a>用户管理</a>
+              <a>订单管理</a>
+              <!-- <a-button size="small" type="primary" ghost icon="plus">{{$t('add')}}</a-button> -->
             </div>
           </a-card>
           <a-card :loading="loading" :title="`XX ${$t('degree')}`" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">

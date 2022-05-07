@@ -6,9 +6,9 @@
         </div>
         <div style="padding: 0 24px">
           <a-tabs :tabBarStyle="{margin: 0}" @change="navigate" :activeKey="activeKey">
-            <a-tab-pane tab="文章" key="1"></a-tab-pane>
-            <a-tab-pane tab="应用" key="2"></a-tab-pane>
-            <a-tab-pane tab="项目" key="3"></a-tab-pane>
+            <a-tab-pane tab="普通用户" key="1"></a-tab-pane>
+            <a-tab-pane tab="技术员" key="2"></a-tab-pane>
+            <a-tab-pane tab="管理员" key="3"></a-tab-pane>
           </a-tabs>
         </div>
       </div>
@@ -26,11 +26,11 @@ export default {
     ...mapState('setting', ['layout', 'pageWidth']),
     activeKey () {
       switch (this.$route.path) {
-        case '/list/search/article':
+        case '/user/userlist/normal':
           return '1'
-        case '/list/search/application':
+        case '/user/userlist/technician':
           return '2'
-        case '/list/search/project':
+        case '/user/userlist/manager':
           return '3'
         default:
           return '1'
@@ -41,13 +41,13 @@ export default {
     navigate (key) {
       switch (key) {
         case '1':
-          this.$router.push('/list/search/article')
+          this.$router.push('/user/userlist/normal')
           break
         case '2':
-          this.$router.push('/list/search/application')
+          this.$router.push('/user/userlist/technician')
           break
         case '3':
-          this.$router.push('/list/search/project')
+          this.$router.push('/user/userlist/manager')
           break
         default:
           this.$router.push('/workplace')

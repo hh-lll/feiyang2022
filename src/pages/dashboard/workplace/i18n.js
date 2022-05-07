@@ -1,15 +1,15 @@
 module.exports = {
   messages: {
     CN: {
-      project: '项目数',
-      ranking: '团队排名',
+      project: '订单总数',
+      ranking: '本月订单情况',
       visit: '项目访问',
-      progress: '进行中的项目',
-      all: '全部项目',
-      access: '快速开始/便捷导航',
+      progress: '进行中的订单',
+      all: '全部订单',
+      access: '便捷导航',
       dynamic: '动态',
       degree: '指数',
-      team: '团队',
+      team: '技术员',
       add: '添加'
     },
     HK: {

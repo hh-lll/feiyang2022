@@ -2,10 +2,10 @@
   <common-layout>
     <div class="top">
       <div class="header">
-        <img alt="logo" class="logo" src="@/assets/img/logo.png" />
+        <img alt="logo" class="logo" src="@/assets/img/fylogo.png" />
         <span class="title">{{systemName}}</span>
       </div>
-      <div class="desc">Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+      <div class="desc">四川大学飞扬俱乐部始终践行【服务川大，创新实践】</div>
     </div>
     <div class="login">
       <a-form @submit="onSubmit" :form="form">
@@ -61,13 +61,6 @@
         <a-form-item>
           <a-button :loading="logging" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary">登录</a-button>
         </a-form-item>
-        <div>
-          其他登录方式
-          <a-icon class="icon" type="alipay-circle" />
-          <a-icon class="icon" type="taobao-circle" />
-          <a-icon class="icon" type="weibo-circle" />
-          <router-link style="float: right" to="/dashboard/workplace" >注册账户</router-link>
-        </div>
       </a-form>
     </div>
   </common-layout>
@@ -160,7 +153,8 @@ export default {
         font-size: 14px;
         color: @text-color-second;
         margin-top: 12px;
-        margin-bottom: 40px;
+        // margin-bottom: 40px;
+        margin-bottom: 20px;
       }
     }
     .login{

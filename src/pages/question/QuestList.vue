@@ -6,7 +6,7 @@
           <a-row >
           <a-col :md="8" :sm="24" >
             <a-form-item
-              label="规则编号"
+              label="问答编号"
               :labelCol="{span: 5}"
               :wrapperCol="{span: 18, offset: 1}"
             >
@@ -15,19 +15,19 @@
           </a-col>
           <a-col :md="8" :sm="24" >
             <a-form-item
-              label="使用状态"
+              label="状态"
               :labelCol="{span: 5}"
               :wrapperCol="{span: 18, offset: 1}"
             >
               <a-select placeholder="请选择">
-                <a-select-option value="1">关闭</a-select-option>
-                <a-select-option value="2">运行中</a-select-option>
+                <a-select-option value="1">已回答</a-select-option>
+                <a-select-option value="2">未回答</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24" >
             <a-form-item
-              label="调用次数"
+              label="浏览次数"
               :labelCol="{span: 5}"
               :wrapperCol="{span: 18, offset: 1}"
             >
@@ -38,25 +38,14 @@
           <a-row v-if="advanced">
           <a-col :md="8" :sm="24" >
             <a-form-item
-              label="更新日期"
+              label="提问日期"
               :labelCol="{span: 5}"
               :wrapperCol="{span: 18, offset: 1}"
             >
               <a-date-picker style="width: 100%" placeholder="请输入更新日期" />
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24" >
-            <a-form-item
-              label="使用状态"
-              :labelCol="{span: 5}"
-              :wrapperCol="{span: 18, offset: 1}"
-            >
-              <a-select placeholder="请选择">
-                <a-select-option value="1">关闭</a-select-option>
-                <a-select-option value="2">运行中</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
+          
           <a-col :md="8" :sm="24" >
             <a-form-item
               label="描述"
@@ -105,18 +94,16 @@
         </div>
         <div slot="action" slot-scope="{text, record}">
           <a style="margin-right: 8px">
-            <a-icon type="plus"/>新增
-          </a>
-          <a style="margin-right: 8px">
             <a-icon type="edit"/>编辑
           </a>
           <a @click="deleteRecord(record.key)">
-            <a-icon type="delete" />删除1
+            <a-icon type="check" />审核
           </a>
-          <a @click="deleteRecord(record.key)" v-auth="`delete`">
-            <a-icon type="delete" />删除2
+          <a @click="deleteRecord(record.key)">
+            <a-icon type="delete" />删除
           </a>
-          <router-link :to="`/list/query/detail/${record.key}`" >详情</router-link>
+          
+          <router-link :to="`/list/query/detail/${record.key}`">详情</router-link>
         </div>
         <template slot="statusTitle">
           <a-icon @click.native="onStatusTitleClick" type="info-circle" />
@@ -130,30 +117,39 @@
 import StandardTable from '@/components/table/StandardTable'
 const columns = [
   {
-    title: '规则编号',
+    title: '问答编号',
     dataIndex: 'no'
   },
   {
-    title: '描述',
+    title: '发布时间',
+    dataIndex: 'updatedAt',
+    sorter: true
+  },
+  {
+    title: '问题内容',
     dataIndex: 'description',
     scopedSlots: { customRender: 'description' }
   },
   {
-    title: '服务调用次数',
+    title: '提问用户',
     dataIndex: 'callNo',
-    sorter: true,
-    needTotal: true,
-    customRender: (text) => text + ' 次'
+    scopedSlots: { customRender: 'description' }
   },
   {
+    title: '回答内容',
+    dataIndex: 'description',
+    scopedSlots: { customRender: 'description' }
+  },
+  {
+    title: '回答技术员',
+    dataIndex: 'callNo',
+    scopedSlots: { customRender: 'description' }
+  },
+  {
+    title: '审核状态',
     dataIndex: 'status',
     needTotal: true,
     slots: {title: 'statusTitle'}
-  },
-  {
-    title: '更新时间',
-    dataIndex: 'updatedAt',
-    sorter: true
   },
   {
     title: '操作',

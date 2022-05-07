@@ -5,12 +5,12 @@
     </drawer>
     <side-menu :class="[fixedSideBar ? 'fixed-side' : '']" :theme="theme.mode" v-else-if="layout === 'side' || layout === 'mix'" :menuData="sideMenuData" :collapsed="collapsed" :collapsible="true" />
     <div v-if="fixedSideBar && !isMobile" :style="`width: ${sideMenuWidth}; min-width: ${sideMenuWidth};max-width: ${sideMenuWidth};`" class="virtual-side"></div>
-    <drawer v-if="!hideSetting" v-model="showSetting" placement="right">
+    <!-- <drawer v-if="!hideSetting" v-model="showSetting" placement="right">
       <div class="setting" slot="handler">
         <a-icon :type="showSetting ? 'close' : 'setting'"/>
       </div>
       <setting />
-    </drawer>
+    </drawer> -->
     <a-layout class="admin-layout-main beauty-scroll">
       <admin-header :class="[{'fixed-tabs': fixedTabs, 'fixed-header': fixedHeader, 'multi-page': multiPage}]" :style="headerStyle" :menuData="headMenuData" :collapsed="collapsed" @toggleCollapse="toggleCollapse"/>
       <a-layout-header :class="['virtual-header', {'fixed-tabs' : fixedTabs, 'fixed-header': fixedHeader, 'multi-page': multiPage}]" v-show="fixedHeader"></a-layout-header>
@@ -20,7 +20,7 @@
         </div>
       </a-layout-content>
       <a-layout-footer style="padding: 0px">
-        <page-footer :link-list="footerLinks" :copyright="copyright" />
+        <!-- <page-footer :link-list="footerLinks" :copyright="copyright" /> -->
       </a-layout-footer>
     </a-layout>
   </a-layout>
@@ -28,17 +28,21 @@
 
 <script>
 import AdminHeader from './header/AdminHeader'
-import PageFooter from './footer/PageFooter'
+// import PageFooter from './footer/PageFooter'
 import Drawer from '../components/tool/Drawer'
 import SideMenu from '../components/menu/SideMenu'
-import Setting from '../components/setting/Setting'
+// import Setting from '../components/setting/Setting'
 import {mapState, mapMutations, mapGetters} from 'vuex'
 
 // const minHeight = window.innerHeight - 64 - 122
 
 export default {
   name: 'AdminLayout',
-  components: {Setting, SideMenu, Drawer, PageFooter, AdminHeader},
+  components: {
+    // Setting,
+     SideMenu, Drawer, 
+  // PageFooter, 
+  AdminHeader},
   data () {
     return {
       minHeight: window.innerHeight - 64 - 122,
