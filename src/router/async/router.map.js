@@ -96,9 +96,9 @@ const routerMap = {
     component: view.blank
   },
   lastest: {
-    path: 'lastest',
+    path: 'lastestList',
     name: '基础详情页',
-    component: () => import('@/pages/order/Lastest')
+    component: () => import('@/pages/order/LastestList')
   },
   orderlist: {
     path: 'orderlist',

@@ -118,14 +118,22 @@ const options = {
           component: BlankView,
           children: [
             {
-              path: 'lastest',
+              path: 'lastestList',
               name: '进行中的订单',
-              component: () => import('@/pages/order/Lastest')
+              component: () => import('@/pages/order/LastestList')
             },
             {
               path: 'orderlist',
               name: '订单列表',
               component: () => import('@/pages/order/OrderList')
+            },
+            {
+              path: 'orderdetail',
+              name: '订单详情',
+              meta: {
+                invisible: true //不生成菜单项
+              },
+              component: () => import('@/pages/order/OrderDetail')
             }
           ]
         },

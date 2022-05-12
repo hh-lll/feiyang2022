@@ -48,7 +48,7 @@
                   </a-input>
                 </a-col>
                 <a-col :span="8" style="padding-left: 4px">
-                  <a-button style="width: 100%" class="captcha-button" size="large">获取验证码</a-button>
+                  <a-button style="width: 100%" class="captcha-button" size="large" @click="getCode">获取验证码</a-button>
                 </a-col>
               </a-row>
             </a-form-item>
