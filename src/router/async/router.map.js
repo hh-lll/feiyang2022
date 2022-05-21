@@ -66,16 +66,14 @@ const routerMap = {
     component: () => import('@/pages/question/QuestList'),
   },
 
-
-
   user: {
     name: '用户管理',
     icon: 'table',
     component: view.page
   },
-  searchList: {
+  userlist: {
     path: 'userlist',
-    name: '搜索列表',
+    name: '用户列表',
     component: () => import('@/pages/user/SearchLayout')
   },
   normal: {

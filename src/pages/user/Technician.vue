@@ -1,24 +1,53 @@
 <template>
   <div class="card-list">
+    <div class="search-input">
+      <a-input-search
+        class="search-ipt"
+        style="width: 522px; margin-bottom: 20px"
+        placeholder="请输入用户名"
+        size="large"
+        enterButton="搜索技术员"
+        v-model="searchInput"
+        @search="onSearch"
+      />
+    </div>
     <a-list
-      :grid="{gutter: 24, lg: 3, md: 2, sm: 1, xs: 1}"
+      :grid="{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }"
       :dataSource="dataSource"
     >
       <a-list-item slot="renderItem" slot-scope="item">
-        <template v-if="item.add">
-          <a-button class="new-btn" type="dashed">
-            <a-icon type="plus" />新增产品
-          </a-button>
-        </template>
-        <template v-else>
+        <template>
           <a-card :hoverable="true">
-            <a-card-meta >
-              <div style="margin-bottom: 3px" slot="title">{{item.title}}</div>
-              <a-avatar class="card-avatar" slot="avatar" :src="item.avatar" size="large" />
-              <div class="meta-content" slot="description">{{item.content}}</div>
+            <a-card-meta @click="toDetail(item)">
+              <div style="margin-bottom: 3px" slot="title">
+                {{ item.username }}
+              </div>
+              <a-avatar
+                class="card-avatar"
+                slot="avatar"
+                :src="item.avatar"
+                size="large"
+              />
+              <div class="meta-content" slot="description">
+                手机号：{{ item.phoneNumber }}
+              </div>
+              <div class="meta-content" slot="description">
+                QQ号：{{ item.qqNumber }}
+              </div>
+              <div class="meta-content" slot="description">
+                接单：{{ item.isAllow }}
+              </div>
             </a-card-meta>
-            <a slot="actions">操作一</a>
-            <a slot="actions">操作一</a>
+
+            <a
+              v-if="item.isAllow"
+              slot="actions"
+              @click="clickAllow(item.userId, 0)"
+              >禁止接单(退休)</a
+            >
+            <a v-else slot="actions" @click="clickAllow(item.userId, 1)"
+              >允许接单</a
+            >
           </a-card>
         </template>
       </a-list-item>
@@ -27,54 +56,83 @@
 </template>
 
 <script>
-const dataSource = []
-dataSource.push({
-  add: true
-})
-for (let i = 0; i < 11; i++) {
-  dataSource.push({
-    title: 'Alipay',
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
-    content: '在中台产品的研发过程中，会出现不同的设计规范和实现方式，但其中往往存在很多类似的页面和组件，这些类似的组件会被抽离成一套标准规范。'
-  })
-}
-
+import { technicianList } from "@/services/dataSource";
+import { techAllow } from "@/services/edituser";
 export default {
-  name: 'CardList',
-  data () {
+  name: "CardList",
+  data() {
     return {
-      desc: '段落示意：蚂蚁金服务设计平台 ant.design，用最小的工作量，无缝接入蚂蚁金服生态， 提供跨越设计与开发的体验解决方案。',
-      linkList: [
-        {icon: 'rocket', href: '/#/', title: '快速开始'},
-        {icon: 'info-circle-o', href: '/#/', title: '产品简介'},
-        {icon: 'file-text', href: '/#/', title: '产品文档'}
-      ],
-      extraImage: 'https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png',
-      dataSource
+      dataSource: [],
+      BdataSource: [],
+      searchInput: "",
+    };
+  },
+  methods: {
+    clickAllow(userId, isALLow) {
+      techAllow(userId, isALLow).then((res) => {
+        this.dataSource = this.dataSource.filter((item) => {
+          if (item.userId != userId) {
+            return item;
+          } else {
+            item.isAllow = res.data.data.isAllow;
+            return item;
+          }
+        });
+      });
+    },
+    onSearch() {
+      console.log(this.searchInput);
+      if (this.searchInput != "") {
+        this.dataSource = this.BdataSource.filter((item) => {
+          if (item.username.includes(this.searchInput)) {
+            return item;
+          }
+        });
+      } else {
+        this.dataSource = this.BdataSource;
+      }
+    },
+    toDetail(item) {
+      console.log("toDetail",item);
+      this.$router.push({
+        name:"技术员详情",
+        params: item
+      })
     }
-  }
-}
+  },
+  mounted() {
+    let that = this;
+    console.log("进入mounted");
+    //获取所有公告
+    // GetOrder().then(function (res) {
+    technicianList().then(function (res) {
+      console.log(res);
+      that.dataSource = res.data.data;
+      console.log(that.dataSource);
+      that.BdataSource = res.data.data;
+    });
+  },
+};
 </script>
 
 <style lang="less" scoped>
-  .card-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 48px;
-  }
-  .new-btn{
-    border-radius: 2px;
-    width: 100%;
-    height: 187px;
-  }
-  .meta-content{
-    position: relative;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    height: 64px;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-  }
-
+.card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 48px;
+}
+.new-btn {
+  border-radius: 2px;
+  width: 100%;
+  height: 187px;
+}
+.meta-content {
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  height: 34px;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
 </style>

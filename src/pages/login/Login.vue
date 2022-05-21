@@ -69,6 +69,7 @@
 <script>
 import CommonLayout from '@/layouts/CommonLayout'
 import {login, getRoutesConfig} from '@/services/user'
+// import {login} from '@/services/user'
 import {setAuthorization} from '@/utils/request'
 import {loadRoutes} from '@/utils/routerUtil'
 import {mapMutations} from 'vuex'
@@ -102,9 +103,14 @@ export default {
       })
     },
     afterLogin(res) {
+      console.log("afterLogin");
+      console.log(res);
       this.logging = false
       const loginRes = res.data
-      if (loginRes.code >= 0) {
+      console.log(loginRes);
+      if (loginRes.message == "登录成功") {
+      // if (loginRes.code >= 0) {
+        
         const {user, permissions, roles} = loginRes.data
         this.setUser(user)
         this.setPermissions(permissions)
@@ -117,6 +123,12 @@ export default {
           this.$router.push('/dashboard/workplace')
           this.$message.success(loginRes.message, 3)
         })
+        // // getRoutesConfig().then(result => {
+        // //   const routesConfig = result.data.data
+        // //   loadRoutes(routesConfig)
+        //   this.$router.push('/dashboard/workplace')
+        //   this.$message.success(loginRes.message, 3)
+        // // })
       } else {
         this.error = loginRes.message
       }

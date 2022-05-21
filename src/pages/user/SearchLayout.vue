@@ -1,9 +1,6 @@
 <template>
     <div>
       <div :class="['search-head', layout, pageWidth]">
-        <div class="search-input">
-          <a-input-search class="search-ipt" style="width: 522px" placeholder="请输入..." size="large" enterButton="搜索" />
-        </div>
         <div style="padding: 0 24px">
           <a-tabs :tabBarStyle="{margin: 0}" @change="navigate" :activeKey="activeKey">
             <a-tab-pane tab="普通用户" key="1"></a-tab-pane>

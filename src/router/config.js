@@ -25,6 +25,7 @@ const options = {
       name: '首页',
       component: TabsView,
       redirect: '/login',
+      
       children: [
         {
           path: 'dashboard',
@@ -37,12 +38,7 @@ const options = {
             {
               path: 'workplace',
               name: '工作台',
-              meta: {
-                page: {
-                  closable: true
-                }
-              },
-              component: () => import('@/pages/dashboard/workplace'),
+              component: () => import('@/pages/dashboard/analysis'),
             },
             {
               path: 'analysis',
@@ -85,9 +81,6 @@ const options = {
             {
               path: 'userlist',
               name: '用户列表',
-              meta: {
-                authority: 'queryForm',
-              },
               component: () => import('@/pages/user/SearchLayout'),
               children: [
                 {
@@ -105,8 +98,25 @@ const options = {
                   name: '管理员',
                   component: () => import('@/pages/user/Manager'),
                 }
-              ]
+              ],
             },
+            
+            {
+              path: 'userdetail',
+              name: '用户详情',
+              meta: {
+                invisible: true //不生成菜单项
+              },
+              component: () => import('@/pages/user/NormalDetail')
+            },
+            {
+              path: 'staffdetail',
+              name: '技术员详情',
+              meta: {
+                invisible: true //不生成菜单项
+              },
+              component: () => import('@/pages/user/TechDetail')
+            }
           ]
         },
         {
@@ -134,7 +144,7 @@ const options = {
                 invisible: true //不生成菜单项
               },
               component: () => import('@/pages/order/OrderDetail')
-            }
+            },
           ]
         },
       ]

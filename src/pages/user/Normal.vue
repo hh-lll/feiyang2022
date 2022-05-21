@@ -1,24 +1,47 @@
 <template>
   <div class="card-list">
+    <div class="search-input">
+      <a-input-search
+        class="search-ipt"
+        style="width: 522px; margin-bottom: 20px"
+        placeholder="请输入用户名"
+        size="large"
+        enterButton="搜索普通用户"
+        v-model="searchInput"
+        @search="onSearch"
+      />
+    </div>
     <a-list
-      :grid="{gutter: 24, lg: 3, md: 2, sm: 1, xs: 1}"
+      :grid="{ gutter: 24, lg: 3, md: 3, sm: 2, xs: 1 }"
       :dataSource="dataSource"
     >
       <a-list-item slot="renderItem" slot-scope="item">
-        <template v-if="item.add">
-          <a-button class="new-btn" type="dashed">
-            <a-icon type="plus" />新增产品
-          </a-button>
-        </template>
-        <template v-else>
+        <template>
           <a-card :hoverable="true">
-            <a-card-meta >
-              <div style="margin-bottom: 3px" slot="title">{{item.title}}</div>
-              <a-avatar class="card-avatar" slot="avatar" :src="item.avatar" size="large" />
-              <div class="meta-content" slot="description">{{item.content}}</div>
+            <a-card-meta @click="toDetail(item)">
+              <div style="margin-bottom: 3px" slot="title">
+                {{ item.username }}
+              </div>
+              <a-avatar
+                class="card-avatar"
+                slot="avatar"
+                :src="item.avatar"
+                size="large"
+              />
+              <div class="meta-content" slot="description">
+                手机号：{{ item.phoneNumber }}
+              </div>
+              <div class="meta-content" slot="description">
+                QQ号：{{ item.qqNumber }}
+              </div>
             </a-card-meta>
-            <a slot="actions">操作一</a>
-            <a slot="actions">操作一</a>
+            <a
+              v-if="item.isBan"
+              slot="actions"
+              @click="clickBan(item.userId, 0)"
+              >解除禁用</a
+            >
+            <a v-else slot="actions" @click="clickBan(item.userId, 1)">禁用</a>
           </a-card>
         </template>
       </a-list-item>
@@ -27,54 +50,88 @@
 </template>
 
 <script>
-const dataSource = []
-dataSource.push({
-  add: true
-})
-for (let i = 0; i < 11; i++) {
-  dataSource.push({
-    title: 'Alipay',
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
-    content: '在中台产品的研发过程中，会出现不同的设计规范和实现方式，但其中往往存在很多类似的页面和组件，这些类似的组件会被抽离成一套标准规范。'
-  })
-}
-
+import { normalList } from "@/services/dataSource";
+import { userUrban } from "@/services/edituser";
 export default {
-  name: 'CardList',
-  data () {
+  name: "CardList",
+  data() {
     return {
-      desc: '段落示意：蚂蚁金服务设计平台 ant.design，用最小的工作量，无缝接入蚂蚁金服生态， 提供跨越设计与开发的体验解决方案。',
-      linkList: [
-        {icon: 'rocket', href: '/#/', title: '快速开始'},
-        {icon: 'info-circle-o', href: '/#/', title: '产品简介'},
-        {icon: 'file-text', href: '/#/', title: '产品文档'}
-      ],
-      extraImage: 'https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png',
-      dataSource
+      dataSource: [],
+      BdataSource: [],
+      searchInput: "",
+    };
+  },
+  methods: {
+    clickBan(userId, isBan) {
+      userUrban(userId, isBan).then((res) => {
+        this.dataSource = this.dataSource.filter((item) => {
+          if (item.userId != userId) {
+            return item;
+          } else {
+            item.isBan = res.data.data.userInfo.isBan;
+            return item;
+          }
+        });
+      });
+    },
+    onSearch() {
+      console.log(this.searchInput);
+      if (this.searchInput != "") {
+        this.dataSource = this.BdataSource.filter((item) => {
+          if (item.username.includes(this.searchInput)) {
+            return item;
+          }
+        });
+      } else {
+        this.dataSource = this.BdataSource;
+      }
+    },
+    toDetail(item) {
+      console.log("toDetail",item);
+      this.$router.push({
+        name:"用户详情",
+        params: item
+      })
     }
-  }
-}
+    
+			// toEditDish(record) {
+			// 	this.$router.push({
+			// 		name: "editdish",
+			// 		params: record
+			// 	})
+			// },
+  },
+  mounted() {
+    let that = this;
+    normalList().then(function (res) {
+      that.dataSource = res.data.data;
+      that.BdataSource = res.data.data;
+    });
+  },
+};
 </script>
 
 <style lang="less" scoped>
-  .card-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 48px;
-  }
-  .new-btn{
-    border-radius: 2px;
-    width: 100%;
-    height: 187px;
-  }
-  .meta-content{
-    position: relative;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    height: 64px;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-  }
-
+.card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 48px;
+}
+.new-btn {
+  border-radius: 2px;
+  width: 100%;
+  height: 187px;
+}
+.meta-content {
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  height: 34px;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.operation {
+  color: white;
+}
 </style>
