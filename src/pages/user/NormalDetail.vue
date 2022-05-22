@@ -89,8 +89,16 @@
         <detail-list-item term="创建时间">{{
           userData.createTime
         }}</detail-list-item>
-        <detail-list-item v-if="!userData.isStaff"><a-button @click="clickIdentity(userData.userId)">设为技术员</a-button></detail-list-item>
-        <detail-list-item v-else><a-button @click="clickIdentity(userData.userId)" disabled="true">设为技术员</a-button></detail-list-item>
+        <detail-list-item v-if="!userData.isStaff"
+          ><a-button @click="clickIdentity(userData.userId)"
+            >设为技术员</a-button
+          ></detail-list-item
+        >
+        <detail-list-item v-else
+          ><a-button @click="clickIdentity(userData.userId)" disabled="true"
+            >设为技术员</a-button
+          ></detail-list-item
+        >
         <detail-list-item>
           <a-button v-if="userData.isBan" @click="clickBan(userData.userId, 0)"
             >解除禁用</a-button
@@ -164,7 +172,8 @@
 import DetailList from "@/components/tool/DetailList";
 import { renderTime } from "@/utils/render-time";
 import { userInfoEdit } from "@/services/edituser";
-import { userUrban,techAdd } from "@/services/edituser";
+import { userUrban, techAdd } from "@/services/edituser";
+import { orderForUser } from "@/services/dataSource";
 const DetailListItem = DetailList.Item;
 const columns = [
   {
@@ -211,13 +220,24 @@ export default {
       totalOrder: 80,
       userData: Object,
       showEdit: false,
+      pagination: {
+        total: 0,
+        current: 1,
+        pageSize: 8,
+        defaultPageSize: 8,
+        showTotal: (total) => `共 ${total} 条数据`,
+        onShowSizeChange: (current, pageSize) => (this.pageSize = pageSize),
+      },
     };
   },
   methods: {
-    getDataFromRoute() {
+    getDataFromRoute(callback) {
       this.userData = this.$route.params;
       this.userData.createTime = renderTime(this.userData.createTime);
       console.log(this.userData);
+      if (typeof callback == "function") {
+        callback();
+      }
     },
     callEdit() {
       this.showEdit = true;
@@ -245,16 +265,38 @@ export default {
         0;
       });
     },
-    clickIdentity(userId){
-      techAdd(userId).then((res)=>{
+    clickIdentity(userId) {
+      techAdd(userId).then((res) => {
         console.log(res);
         this.userData.isStaff = 1;
-      })
-    }
+      });
+    },
+    handleTableChange(e) {
+      console.log(e);
+      let that = this;
+      let current = e.current;
+      that.pagination.current = current;
+      let userId = that.userData.userId;
+      orderForUser(current, userId).then(function (res) {
+        console.log(res);
+        that.orderData = res.data.data;
+        console.log(this.orderData);
+      });
+    },
   },
   mounted() {
     console.log("进入mounted");
-    this.getDataFromRoute();
+    let that = this;
+    // 先获取用户的ID，然后用ID去查找用户相关的订单
+    // 回调写得好丑，先这样，后期改
+    this.getDataFromRoute(function () {
+      let userId = that.userData.userId;
+      //获取第一页的订单
+      orderForUser(1, userId).then(function (res) {
+        that.orderData = res.data.data;
+        that.pagination.total = res.data.otherData.page.rows;
+      });
+    });
   },
 };
 </script>

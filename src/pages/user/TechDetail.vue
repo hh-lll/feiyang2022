@@ -1,5 +1,6 @@
 <template>
   <div>
+    <a-card style="margin-top: 24px" :bordered="false" title="基本信息"></a-card>
     <div class="user-wrap">
       <detail-list v-if="!showEdit" size="small" col="1" slot="headerContent">
         <detail-list-item term="用户ID">{{ userData.userId }}</detail-list-item>
@@ -99,6 +100,7 @@
         </detail-list-item>
       </detail-list>
     </div>
+    <a-card style="margin-top: 24px" :bordered="false" title="技术员相关信息"></a-card>
     <div class="tech-wrap">
           <detail-list size="small" col="1" slot="headerContent">
         <detail-list-item term="是否为技术员">{{
@@ -184,6 +186,7 @@ import DetailList from "@/components/tool/DetailList";
 import { renderTime } from "@/utils/render-time";
 import { userInfoEdit } from "@/services/edituser";
 import { userUrban,techAdd,techUpdate } from "@/services/edituser";
+import { orderForUser } from "@/services/dataSource";
 const DetailListItem = DetailList.Item;
 const columns = [
   {
@@ -230,13 +233,24 @@ export default {
       totalOrder: 80,
       userData: Object,
       showEdit: false,
+      pagination: {
+        total: 0,
+        current: 1,
+        pageSize: 8,
+        defaultPageSize: 8,
+        showTotal: (total) => `共 ${total} 条数据`,
+        onShowSizeChange: (current, pageSize) => (this.pageSize = pageSize),
+      },
     };
   },
   methods: {
-    getDataFromRoute() {
+    getDataFromRoute(callback) {
       this.userData = this.$route.params;
       this.userData.createTime = renderTime(this.userData.createTime);
       console.log(this.userData);
+      if (typeof callback == "function") {
+        callback();
+      }
     },
     callEdit() {
       this.showEdit = true;
@@ -275,11 +289,31 @@ export default {
         console.log(res);
         // this.userData.isStaff = 1;
       })
-    }
+    },
+    handleTableChange(e) {
+      console.log(e);
+      let that = this;
+      let current = e.current;
+      that.pagination.current = current;
+      let userId = that.userData.userId;
+      orderForUser(current, userId).then(function (res) {
+        console.log(res);
+        that.orderData = res.data.data;
+        console.log(this.orderData);
+      });
+    },
   },
   mounted() {
     console.log("进入mounted");
-    this.getDataFromRoute();
+    let that = this;
+    this.getDataFromRoute(function () {
+      let userId = that.userData.userId;
+      //获取第一页的订单
+      orderForUser(1, userId).then(function (res) {
+        that.orderData = res.data.data;
+        that.pagination.total = res.data.otherData.page.rows;
+      });
+    });
   },
 };
 </script>
@@ -302,6 +336,12 @@ export default {
 .user-wrap {
   background-color: white;
   display: flex;
+  padding: 20px;
+  font-size: 1.1em;
+}
+.tech-wrap{
+  background-color: white;
+  // display: flex;
   padding: 20px;
   font-size: 1.1em;
 }

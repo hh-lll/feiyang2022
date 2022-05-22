@@ -2,7 +2,11 @@
   <div>
     <a-card :bordered="false">
       <div style="display: flex; flex-wrap: wrap">
-        <head-info title="总订单量" content="80个" :bordered="true" />
+        <head-info
+          title="总订单量"
+          :content="allOrderNum + '个'"
+          :bordered="true"
+        />
         <head-info
           title="本周订单平均处理时间"
           content="32分钟"
@@ -72,278 +76,6 @@
 
 <script>
 import { orderList } from "@/services/dataSource";
-// const orderData = [
-//     {
-//       orderId: 1,
-//       userId: 3,
-//       staffId: null,
-//       createTime: "2022-05-05T06:45:17.000+00:00",
-//       receiveTime: null,
-//       closeTime: "2022-05-05T06:55:31.000+00:00",
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "华为",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: "测试一下取消",
-//       status: 0,
-//     },
-//     {
-//       orderId: 2,
-//       userId: 3,
-//       staffId: 1,
-//       createTime: "2022-05-05T06:49:11.000+00:00",
-//       receiveTime: "2022-05-05T10:17:46.000+00:00",
-//       closeTime: "2022-05-09T09:03:20.000+00:00",
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "联想",
-//       deviceVersion: "1.0",
-//       repairType: "屏幕损坏",
-//       repairInstruction: "屏幕轻微损坏",
-//       repairImage: "sfz2",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 3,
-//     },
-//     {
-//       orderId: 3,
-//       userId: 5,
-//       staffId: 2,
-//       createTime: "2022-05-05T06:58:17.000+00:00",
-//       receiveTime: "2022-05-05T06:59:03.000+00:00",
-//       closeTime: "2022-05-07T13:44:21.000+00:00",
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "戴尔",
-//       deviceVersion: "1.0",
-//       repairType: "卡机",
-//       repairInstruction: "卡卡卡卡卡",
-//       repairImage: "124sdfa",
-//       guaranteeStatus: "不在保",
-//       cancelReason: null,
-//       status: 3,
-//     },
-//     {
-//       orderId: 4,
-//       userId: 5,
-//       staffId: 2,
-//       createTime: "2022-05-05T09:18:58.000+00:00",
-//       receiveTime: "2022-05-05T10:18:27.000+00:00",
-//       closeTime: "2022-05-07T13:40:37.000+00:00",
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "戴尔",
-//       deviceVersion: "1.0",
-//       repairType: "卡机",
-//       repairInstruction: "卡卡卡卡卡",
-//       repairImage: "124sdfa",
-//       guaranteeStatus: "不在保",
-//       cancelReason: null,
-//       status: 1,
-//     },
-//     {
-//       orderId: 5,
-//       userId: 3,
-//       staffId: 1,
-//       createTime: "2022-05-05T09:21:13.000+00:00",
-//       receiveTime: "2022-05-05T14:53:37.000+00:00",
-//       closeTime: null,
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "苹果",
-//       deviceVersion: "1.0",
-//       repairType: "黑屏",
-//       repairInstruction: "重启无反应，一直黑屏",
-//       repairImage: "124sdfa",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 2,
-//     },
-//     {
-//       orderId: 8,
-//       userId: 5,
-//       staffId: 1,
-//       createTime: "2022-05-05T14:55:04.000+00:00",
-//       receiveTime: "2022-05-05T15:01:15.000+00:00",
-//       closeTime: "2022-05-07T13:43:37.000+00:00",
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "测试1",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 3,
-//     },
-//     {
-//       orderId: 10,
-//       userId: 5,
-//       staffId: 2,
-//       createTime: "2022-05-05T15:02:15.000+00:00",
-//       receiveTime: "2022-05-07T13:40:38.000+00:00",
-//       closeTime: "2022-05-09T09:01:12.000+00:00",
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "测试1",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 3,
-//     },
-//     {
-//       orderId: 11,
-//       userId: 5,
-//       staffId: 1,
-//       createTime: "2022-05-05T15:02:17.000+00:00",
-//       receiveTime: "2022-05-07T13:42:46.000+00:00",
-//       closeTime: null,
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "测试1",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 2,
-//     },
-//     {
-//       orderId: 12,
-//       userId: 3,
-//       staffId: 1,
-//       createTime: "2022-05-07T13:41:32.000+00:00",
-//       receiveTime: "2022-05-07T13:43:37.000+00:00",
-//       closeTime: null,
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "华为",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 2,
-//     },
-//     {
-//       orderId: 13,
-//       userId: 5,
-//       staffId: 2,
-//       createTime: "2022-05-07T13:41:41.000+00:00",
-//       receiveTime: "2022-05-07T13:44:21.000+00:00",
-//       closeTime: null,
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "华为",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 2,
-//     },
-//     {
-//       orderId: 14,
-//       userId: 3,
-//       staffId: 1,
-//       createTime: "2022-05-09T09:02:32.000+00:00",
-//       receiveTime: "2022-05-09T09:20:21.000+00:00",
-//       closeTime: "2022-05-09T11:39:55.000+00:00",
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "华为",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 3,
-//     },
-//     {
-//       orderId: 15,
-//       userId: 3,
-//       staffId: 10,
-//       createTime: "2022-05-09T09:21:33.000+00:00",
-//       receiveTime: "2022-05-09T09:23:20.000+00:00",
-//       closeTime: null,
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "华为",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 2,
-//     },
-//     {
-//       orderId: 16,
-//       userId: 3,
-//       staffId: 5,
-//       createTime: "2022-05-09T09:40:02.000+00:00",
-//       receiveTime: "2022-05-09T09:43:55.000+00:00",
-//       closeTime: "2022-05-09T10:00:27.000+00:00",
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "华为",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 3,
-//     },
-//     {
-//       orderId: 17,
-//       userId: 3,
-//       staffId: 2,
-//       createTime: "2022-05-09T09:45:57.000+00:00",
-//       receiveTime: "2022-05-09T10:06:49.000+00:00",
-//       closeTime: null,
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "华为",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 2,
-//     },
-//     {
-//       orderId: 18,
-//       userId: 3,
-//       staffId: 1,
-//       createTime: "2022-05-09T11:39:39.000+00:00",
-//       receiveTime: "2022-05-09T11:39:59.000+00:00",
-//       closeTime: null,
-//       buyTime: null,
-//       deviceType: "笔记本",
-//       deviceBrand: "华为",
-//       deviceVersion: "1.0",
-//       repairType: "清灰",
-//       repairInstruction: "电脑太旧，清个灰",
-//       repairImage: "sfzdcvjbzdjshgs",
-//       guaranteeStatus: "在保",
-//       cancelReason: null,
-//       status: 2,
-//     },
-// ];
 const columns = [
   {
     title: "订单编号",
@@ -379,28 +111,48 @@ const columns = [
     },
   },
 ];
-// import { request, METHOD } from "@/utils/request";
-// async function GetOrder() {
-//   return request("/fy/order/all", METHOD.GET);
-// }
 import HeadInfo from "../../components/tool/HeadInfo";
 export default {
   name: "StandardList",
   components: { HeadInfo },
   data() {
     return {
+      allOrderNum: "",
       orderData: [],
       columns: columns,
+      pagination: {
+        total: 0,
+        current: 1,
+        pageSize: 8,
+        defaultPageSize: 8,
+        showTotal: (total) => `共 ${total} 条数据`,
+        onShowSizeChange: (current, pageSize) => (this.pageSize = pageSize),
+      },
     };
+  },
+  methods: {
+    handleTableChange(e) {
+      console.log(e);
+      let that = this;
+      let current = e.current;
+      that.pagination.current = current;
+      orderList(current).then(function (res) {
+        console.log(res);
+        that.orderData = res.data.data;
+        console.log(this.orderData);
+      });
+    },
   },
   mounted() {
     let that = this;
     console.log("进入mounted");
-    //获取所有公告
-    // GetOrder().then(function (res) {
-    orderList().then(function (res) {
+    //获取第一页的订单
+    orderList(1).then(function (res) {
       console.log(res);
+      that.allOrderNum = res.data.otherData.page.rows;
       that.orderData = res.data.data;
+      that.pagination.total = res.data.otherData.page.rows;
+      console.log(that.allOrderNum);
     });
   },
 };
