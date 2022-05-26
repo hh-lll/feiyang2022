@@ -1,6 +1,5 @@
 <template>
   <div>
-    <a-card style="margin-top: 24px" :bordered="false" title="基本信息"></a-card>
     <div class="user-wrap">
       <detail-list v-if="!showEdit" size="small" col="1" slot="headerContent">
         <detail-list-item term="用户ID">{{ userData.userId }}</detail-list-item>
@@ -84,12 +83,22 @@
         <detail-list-item term="是否为技术员">{{
           userData.isStaff ? "是" : "否"
         }}</detail-list-item>
-        <detail-list-item term="是否禁止接单">{{
-          userData.isAllow ? "是" : "否"
+        <detail-list-item term="是否禁止报修">{{
+          userData.isBan ? "是" : "否"
         }}</detail-list-item>
         <detail-list-item term="创建时间">{{
           userData.createTime
         }}</detail-list-item>
+        <detail-list-item v-if="!userData.isStaff"
+          ><a-button @click="clickIdentity(userData.userId)"
+            >设为技术员</a-button
+          ></detail-list-item
+        >
+        <detail-list-item v-else
+          ><a-button @click="clickIdentity(userData.userId)" disabled="true"
+            >设为技术员</a-button
+          ></detail-list-item
+        >
         <detail-list-item>
           <a-button v-if="userData.isBan" @click="clickBan(userData.userId, 0)"
             >解除禁用</a-button
@@ -100,28 +109,6 @@
         </detail-list-item>
       </detail-list>
     </div>
-    <a-card style="margin-top: 24px" :bordered="false" title="技术员相关信息"></a-card>
-    <div class="tech-wrap">
-          <detail-list size="small" col="1" slot="headerContent">
-        <detail-list-item term="是否为技术员">{{
-          userData.isStaff ? "是" : "否"
-        }}</detail-list-item>
-        <detail-list-item term="是否禁止接单">{{
-          userData.isAllow ? "是" : "否"
-        }}</detail-list-item>
-        <detail-list-item term="创建时间">{{
-          userData.createTime
-        }}</detail-list-item>
-        <detail-list-item>
-          <a-button @click="subTechUpdate(userData.userId)"
-            >更新信息</a-button
-          >
-          <a-button @click="clickBan(userData.userId, 1)"
-            >禁止报修</a-button
-          >
-        </detail-list-item>
-      </detail-list>
-      </div>
     <a-card style="margin-top: 24px" :bordered="false" title="订单列表">
       <div slot="extra">
         <a-radio-group>
@@ -185,7 +172,7 @@
 import DetailList from "@/components/tool/DetailList";
 import { renderTime } from "@/utils/render-time";
 import { userInfoEdit } from "@/services/edituser";
-import { userUrban,techAdd,techUpdate } from "@/services/edituser";
+import { userUrban, staffAdd } from "@/services/edituser";
 import { orderForUser } from "@/services/dataSource";
 const DetailListItem = DetailList.Item;
 const columns = [
@@ -278,17 +265,11 @@ export default {
         0;
       });
     },
-    clickIdentity(userId){
-      techAdd(userId).then((res)=>{
+    clickIdentity(userId) {
+      staffAdd(userId).then((res) => {
         console.log(res);
         this.userData.isStaff = 1;
-      })
-    },
-    subTechUpdate(userId){
-      techUpdate(userId,21,"新华社天津5月19日电（记者白佳丽）5月19日上午，天津市第二中级人民法院对公益诉讼起诉人天津市人民检察院第二分院诉被告张某侵害著名农业科").then((res)=>{
-        console.log(res);
-        // this.userData.isStaff = 1;
-      })
+      });
     },
     handleTableChange(e) {
       console.log(e);
@@ -306,6 +287,8 @@ export default {
   mounted() {
     console.log("进入mounted");
     let that = this;
+    // 先获取用户的ID，然后用ID去查找用户相关的订单
+    // 回调写得好丑，先这样，后期改
     this.getDataFromRoute(function () {
       let userId = that.userData.userId;
       //获取第一页的订单
@@ -336,12 +319,6 @@ export default {
 .user-wrap {
   background-color: white;
   display: flex;
-  padding: 20px;
-  font-size: 1.1em;
-}
-.tech-wrap{
-  background-color: white;
-  // display: flex;
   padding: 20px;
   font-size: 1.1em;
 }

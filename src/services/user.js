@@ -1,4 +1,4 @@
-import {LOGIN, ROUTES} from '@/services/api'
+import {LOGIN, GETCODE,LOGINSTAFF} from '@/services/api'
 import {request, METHOD, removeAuthorization} from '@/utils/request'
 import Qs from 'qs'
 /**
@@ -9,15 +9,29 @@ import Qs from 'qs'
  */
 export async function login(name, password) {
   return request(LOGIN, METHOD.POST, Qs.stringify({
-    // return request("http://162.14.64.229:8080/admin/login", METHOD.POST, {
     "username": name,
     "password": password
   }))
 }
 
-export async function getRoutesConfig() {
-  return request(ROUTES, METHOD.GET)
+export async function loginStaff(phoneNumber) {
+  return request(LOGINSTAFF, METHOD.POST, Qs.parse({
+    "phoneNumber": phoneNumber,
+  }))
 }
+
+export async function getCode(phoneNumber) {
+  return request(GETCODE, METHOD.GET, Qs.stringify({
+    "phoneNumber": phoneNumber,
+  }))
+}
+
+// export async function login(name, password) {
+//   return request(LOGIN, METHOD.POST, {
+//     name: name,
+//     password: password
+//   })
+// }
 
 /**
  * 退出登录
@@ -31,5 +45,4 @@ export function logout() {
 export default {
   login,
   logout,
-  getRoutesConfig
 }

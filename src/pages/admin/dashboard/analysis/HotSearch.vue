@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import MiniArea from '../../../components/chart/MiniArea'
+import MiniArea from '../../../../components/chart/MiniArea'
 
 const searchData = []
 for (let i = 0; i < 50; i++) {

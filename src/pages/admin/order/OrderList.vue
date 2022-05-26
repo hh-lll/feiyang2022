@@ -111,7 +111,7 @@ const columns = [
     },
   },
 ];
-import HeadInfo from "../../components/tool/HeadInfo";
+import HeadInfo from "../../../components/tool/HeadInfo";
 export default {
   name: "StandardList",
   components: { HeadInfo },

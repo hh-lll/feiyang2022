@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { managerList } from "@/services/dataSource";
+import { adminList } from "@/services/dataSource";
 import { renderTime } from "@/utils/render-time";
 
 export default {
@@ -43,7 +43,7 @@ export default {
   mounted() {
     let that = this;
     console.log("进入mounted");
-    managerList().then(function (res) {
+    adminList().then(function (res) {
       console.log(res);
       that.dataSource = res.data.data.map((item) => {
         let time = renderTime(item.createtime);

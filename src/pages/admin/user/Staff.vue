@@ -56,8 +56,8 @@
 </template>
 
 <script>
-import { technicianList } from "@/services/dataSource";
-import { techAllow } from "@/services/edituser";
+import { staffList } from "@/services/dataSource";
+import { staffAllow } from "@/services/edituser";
 export default {
   name: "CardList",
   data() {
@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     clickAllow(userId, isALLow) {
-      techAllow(userId, isALLow).then((res) => {
+      staffAllow(userId, isALLow).then((res) => {
         this.dataSource = this.dataSource.filter((item) => {
           if (item.userId != userId) {
             return item;
@@ -105,7 +105,7 @@ export default {
     console.log("进入mounted");
     //获取所有公告
     // GetOrder().then(function (res) {
-    technicianList().then(function (res) {
+    staffList().then(function (res) {
       console.log(res);
       that.dataSource = res.data.data;
       console.log(that.dataSource);

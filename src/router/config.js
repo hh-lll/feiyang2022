@@ -38,12 +38,12 @@ const options = {
             {
               path: 'workplace',
               name: '工作台',
-              component: () => import('@/pages/dashboard/analysis'),
+              component: () => import('@/pages/admin/dashboard/analysis'),
             },
             {
               path: 'analysis',
               name: '运营统计',
-              component: () => import('@/pages/dashboard/analysis'),
+              component: () => import('@/pages/admin/dashboard/analysis'),
             }
           ]
         },
@@ -61,12 +61,12 @@ const options = {
             {
               path: 'examine',
               name: '问答审批',
-              component: () => import('@/pages/question/Examine'),
+              component: () => import('@/pages/admin/question/Examine'),
             },
             {
               path: 'questlist',
               name: '问答列表',
-              component: () => import('@/pages/question/QuestList'),
+              component: () => import('@/pages/admin/question/QuestList'),
             },
           ]
         },
@@ -81,22 +81,22 @@ const options = {
             {
               path: 'userlist',
               name: '用户列表',
-              component: () => import('@/pages/user/SearchLayout'),
+              component: () => import('@/pages/admin/user/SearchLayout'),
               children: [
                 {
                   path: 'normal',
                   name: '普通用户',
-                  component: () => import('@/pages/user/Normal'),
+                  component: () => import('@/pages/admin/user/Normal'),
                 },
                 {
-                  path: 'technician',
+                  path: 'staff',
                   name: '技术员',
-                  component: () => import('@/pages/user/Technician'),
+                  component: () => import('@/pages/admin/user/Staff'),
                 },
                 {
-                  path: 'manager',
+                  path: 'admin',
                   name: '管理员',
-                  component: () => import('@/pages/user/Manager'),
+                  component: () => import('@/pages/admin/user/Admin'),
                 }
               ],
             },
@@ -107,7 +107,7 @@ const options = {
               meta: {
                 invisible: true //不生成菜单项
               },
-              component: () => import('@/pages/user/NormalDetail')
+              component: () => import('@/pages/admin/user/NormalDetail')
             },
             {
               path: 'staffdetail',
@@ -115,7 +115,7 @@ const options = {
               meta: {
                 invisible: true //不生成菜单项
               },
-              component: () => import('@/pages/user/TechDetail')
+              component: () => import('@/pages/admin/user/StaffDetail')
             }
           ]
         },
@@ -130,12 +130,12 @@ const options = {
             {
               path: 'lastestList',
               name: '进行中的订单',
-              component: () => import('@/pages/order/LastestList')
+              component: () => import('@/pages/admin/order/LastestList')
             },
             {
               path: 'orderlist',
               name: '订单列表',
-              component: () => import('@/pages/order/OrderList')
+              component: () => import('@/pages/admin/order/OrderList')
             },
             {
               path: 'orderdetail',
@@ -143,7 +143,7 @@ const options = {
               meta: {
                 invisible: true //不生成菜单项
               },
-              component: () => import('@/pages/order/OrderDetail')
+              component: () => import('@/pages/admin/order/OrderDetail')
             },
           ]
         },

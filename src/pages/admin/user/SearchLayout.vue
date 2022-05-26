@@ -25,9 +25,9 @@ export default {
       switch (this.$route.path) {
         case '/user/userlist/normal':
           return '1'
-        case '/user/userlist/technician':
+        case '/user/userlist/staff':
           return '2'
-        case '/user/userlist/manager':
+        case '/user/userlist/admin':
           return '3'
         default:
           return '1'
@@ -41,10 +41,10 @@ export default {
           this.$router.push('/user/userlist/normal')
           break
         case '2':
-          this.$router.push('/user/userlist/technician')
+          this.$router.push('/user/userlist/staff')
           break
         case '3':
-          this.$router.push('/user/userlist/manager')
+          this.$router.push('/user/userlist/admin')
           break
         default:
           this.$router.push('/workplace')

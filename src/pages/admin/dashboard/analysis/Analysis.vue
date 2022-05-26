@@ -104,15 +104,15 @@
 </template>
 
 <script>
-import ChartCard from '../../../components/card/ChartCard'
-import MiniArea from '../../../components/chart/MiniArea'
-import MiniBar from '../../../components/chart/MiniBar'
-import MiniProgress from '../../../components/chart/MiniProgress'
-import Bar from '../../../components/chart/Bar'
-import RankingList from '../../../components/chart/RankingList'
+import ChartCard from '../../../../components/card/ChartCard'
+import MiniArea from '../../../../components/chart/MiniArea'
+import MiniBar from '../../../../components/chart/MiniBar'
+import MiniProgress from '../../../../components/chart/MiniProgress'
+import Bar from '../../../../components/chart/Bar'
+import RankingList from '../../../../components/chart/RankingList'
 import HotSearch from './HotSearch'
 import SalesData from './SalesData'
-import Trend from '../../../components/chart/Trend'
+import Trend from '../../../../components/chart/Trend'
 
 const rankList = []
 

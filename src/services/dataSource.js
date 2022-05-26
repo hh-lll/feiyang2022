@@ -2,7 +2,8 @@ import {
   GOODS,
   GOODS_COLUMNS,
   ORDER_QUERY,
-  USER_LIST
+  USER_LIST,
+  QUESTION_ALL
 } from './api'
 import {
   METHOD,
@@ -33,21 +34,24 @@ export async function normalList() {
     role: 0
   });
 }
-export async function technicianList() {
+export async function staffList() {
   return request(USER_LIST, METHOD.GET, {
     role: 1
   });
 }
-export async function managerList() {
+export async function adminList() {
   return request(USER_LIST, METHOD.GET, {
     role: 2
   });
+}
+export async function questionList() {
+  return request(QUESTION_ALL, METHOD.GET);
 }
 export default {
   goodsList,
   goodsColumns,
   orderList,
   normalList,
-  technicianList,
-  managerList
+  staffList,
+  adminList
 }

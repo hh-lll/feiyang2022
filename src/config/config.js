@@ -5,7 +5,7 @@ module.exports = {
     mode: 'light',
   },
   multiPage: true,
-  asyncRoutes: false,       
+  asyncRoutes: true,       
   animate: {    
     disabled: true,      //禁用动画，true:禁用，false:启用
     name: 'lightSpeed',

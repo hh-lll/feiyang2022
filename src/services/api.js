@@ -6,12 +6,15 @@ const LOGIN_URL = process.env.VUE_APP_API_BASE_URL
 module.exports = {
   // LOGIN: `${LOGIN_URL}/login`,
   LOGIN: `${FY_URL}/admin/login`,
-  ROUTES: `${LOGIN_URL}/routes`,
+  LOGINSTAFF: `${FY_URL}/user/login`,
+  GETCODE: `${FY_URL}/user/sendCode`,
+  ROUTES: `${LOGIN_URL}/routes`, //可注释
   GOODS: `${BASE_URL}/goods`,
   GOODS_COLUMNS: `${BASE_URL}/columns`,
   ORDER_QUERY: `${FY_URL}/order/query`,
   USER_LIST: `${FY_URL}/user/all`,
   USER_UPDATE: `${FY_URL}/user/update`,
-  TECH_ALLOW: `${FY_URL}/staff/update`,
-  TECH_ADD: `${FY_URL}/staff/add`,
+  STAFF_ALLOW: `${FY_URL}/staff/update`,
+  STAFF_ADD: `${FY_URL}/staff/add`,
+  QUESTION_ALL: `${FY_URL}/question/all`,
 }

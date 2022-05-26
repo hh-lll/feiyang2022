@@ -1,4 +1,4 @@
-import {USER_UPDATE,TECH_ALLOW,TECH_ADD} from './api'
+import {USER_UPDATE,STAFF_ALLOW,STAFF_ADD} from './api'
 import {METHOD, request} from '@/utils/request'
 import Qs from 'qs'
 
@@ -29,22 +29,22 @@ export async function userInfoEdit(userId,username,qqNumber,phoneNumber,email,is
     }})
 }
 
-export async function techAllow(userId,isAllow) {
-  return request(TECH_ALLOW, METHOD.GET, {
+export async function staffAllow(userId,isAllow) {
+  return request(STAFF_ALLOW, METHOD.GET, {
     userId: userId,
     isAllow: isAllow
   })
 }
-export async function techAdd(userId) {
-  return request(TECH_ADD, METHOD.GET, {
+export async function staffAdd(userId) {
+  return request(STAFF_ADD, METHOD.GET, {
     userId: userId,
   })
 }
-export async function techUpdate(userId,receiveInterval,tips) {
-  return request(TECH_ALLOW, METHOD.GET, {
+export async function staffUpdate(userId,receiveInterval,tips) {
+  return request(STAFF_ALLOW, METHOD.GET, {
     userId: userId,
     receiveInterval: receiveInterval,
     tips: tips
   })
 }
-export default {userUrban,userInfoEdit,techAllow,techAdd,techUpdate}
+export default {userUrban,userInfoEdit,staffAllow,staffAdd,staffUpdate}
