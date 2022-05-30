@@ -1,7 +1,7 @@
 <template>
   <a-dropdown>
     <div class="header-avatar" style="cursor: pointer">
-      <a-avatar class="avatar" size="small" shape="circle" src="../../assets/img/fylogo.png"/>
+      <a-avatar class="avatar" size="small" shape="circle" :src="user.avatarUrl"/>
       <span class="name">{{user.username}}</span>
     </div>
     <a-menu :class="['avatar-menu']" slot="overlay">

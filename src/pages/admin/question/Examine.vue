@@ -1,28 +1,34 @@
 <template>
   <div>
-    <div v-if="postList.length != 0" style="height: 450px;overflow: hidden;">
-      <a-card v-for="(item, i) in postList" v-bind:key="i">
+    <div v-if="postList.length != 0">
+    <a-card>
+      待审核量/本次审核总量：
+      {{residue}}/{{totalCount}}
+    </a-card>
+      <!-- <a-card v-for="(item, i) in postList" :key="i"> -->
+      <a-card>
         <div class="qu-wrap">
-          <div class="title">{{ item.title }}</div>
-          <div class="time">{{ item.questTime }}</div>
+          <div class="title">{{ postList[0].question_content }}</div>
+          <div class="time">{{ postList[0].question_time }}</div>
         </div>
         <div class="tech-wrap">
           <!-- <img class="avatar" :src="avaUrl" /> -->
-          <img class="avatar" src="@/assets/img/alipay.png" />
+          <!-- <img class="avatar" src="@/assets/img/alipay.png" /> -->
           <div>
             <div class="tech-info">
-              <div class="id">{{ item.id }}</div>
-              <div class="name">{{ item.name }}</div>
+              <!-- <div class="id">{{ item.id }}</div> -->
+              <div class="name">技术员用户名：{{ postList[0].post_username }}</div>
             </div>
-            <div class="time">{{ item.answertTime }}</div>
+            <div class="time">回答时间：{{ postList[0].post_time }}</div>
           </div>
         </div>
-        <div class="an-wrap">
-          <p v-html="item.answer"></p>
+        <div class="an-wrap" v-html="postList[0].post_content">
         </div>
         <div class="operation">
-          <a-button type="primary" @click="no">不通过</a-button>
-          <a-button style="background-color: #17a05d; color: white"
+          <a-button type="primary" @click="nopass(postList[0])">不通过</a-button>
+          <a-button
+            style="background-color: #17a05d; color: white"
+            @click="pass(postList[0])"
             >通过</a-button
           >
         </div>
@@ -33,45 +39,63 @@
 </template>
 
 <script>
+import { examineList } from "@/services/dataSource";
+import { passPost, nopassPost } from "@/services/post";
+import { renderTime } from "@/utils/render-time";
+import { marked } from "marked";
 export default {
   data() {
     return {
-      postList: [
-        {
-          title: "电脑黑屏怎么办",
-          questTime: "2022-4-15",
-          id: "技术员编号",
-          name: "技术员用户名",
-          answertTime: "2022-5-7",
-          avaUrl: "@/assets/img/alipay.png",
-          answer:
-            "控制面板→所有控制面板项→电源选项→编辑计划设置→使计算机进入睡眠状态为：“从不”。睡眠设置为永不睡眠或者设置自己想要得方式。2、电脑黑屏怎么办——电脑系统被破坏或中毒如果电脑系统被破坏或中毒引起的黑屏，这个好判断。直接重启开机进入bois界面或按F8看看能否进入安全模式，如果开机能出bois界面或能进安全模式就说明硬件本身没有坏，只是操作系统问题。解决方法：重新安装操作系统问题就可以解决了。",
-        },
-        {
-          title: "怎么办",
-          questTime: "2022-3-2",
-          id: "技术员编号",
-          name: "技术员用户名",
-          answertTime: "2022-5-7",
-          avaUrl: "@/assets/img/alipay.png",
-          answer: "解决方法：重新安装操作系统问题就可以解决了。",
-        },
-      ],
-      title: "电脑黑屏怎么办",
-      questTime: "2022-4-15",
-      id: "技术员编号",
-      name: "技术员用户名",
-      answertTime: "2022-5-7",
-      avaUrl: "@/assets/img/alipay.png",
-      answer:
-        "控制面板→所有控制面板项→电源选项→编辑计划设置→使计算机进入睡眠状态为：“从不”。睡眠设置为永不睡眠或者设置自己想要得方式。2、电脑黑屏怎么办——电脑系统被破坏或中毒如果电脑系统被破坏或中毒引起的黑屏，这个好判断。直接重启开机进入bois界面或按F8看看能否进入安全模式，如果开机能出bois界面或能进安全模式就说明硬件本身没有坏，只是操作系统问题。解决方法：重新安装操作系统问题就可以解决了。",
+      postList: [],
+      totalCount:0,
+      residue:0
     };
   },
-  methods:{
-    no(){
-      this.postList.splice(0,1)
-    }
-  }
+  mounted() {
+    examineList()
+      .then((res) => {
+        this.totalCount = res.data.data.totalCount
+        this.residue = res.data.data.totalCount
+        this.postList = res.data.data.posts.map((item) => {
+          item.post_content = marked.parse(item.post_content)
+          .replace(/<img/g, "<img style='width:100%'");
+          item.post_time = renderTime(item.post_time);
+          item.question_time = renderTime(item.question_time);
+          return item;
+        });
+        console.log(this.postList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
+  methods: {
+    pass(item) {
+      console.log(item);
+      passPost(item.post_id).then((res) => {
+        if(res.status == 200){
+          this.$message.success("审核成功！")
+        }
+        else{
+          this.$message.error("审核失败！")
+        }
+      });
+      this.postList.splice(0, 1);
+      this.residue--;
+    },
+    nopass(item) {
+      nopassPost(item.post_id).then((res) => {
+        if(res.status == 200){
+          this.$message.success("审核成功！")
+        }
+        else{
+          this.$message.error("审核失败！")
+        }
+      });
+      this.postList.splice(0, 1);
+      this.residue--;
+    },
+  },
 };
 </script>
 
@@ -108,6 +132,7 @@ export default {
   background-color: #f3f3f3;
   min-height: 200px;
   padding: 10px;
+  overflow: auto;
   margin-bottom: 20px;
   p {
     line-height: 150%;

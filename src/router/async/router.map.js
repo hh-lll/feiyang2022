@@ -121,6 +121,14 @@ const routerMap = {
     // },
     component: () => import('@/pages/admin/user/Admin')
   },
+  userall: {
+    path: 'userall',
+    name: '所有用户',
+    // authority: {
+    //   role: 'admin'
+    // },
+    component: () => import('@/pages/admin/user/All')
+  },
 
   userdetail: {
     path: 'userdetail',
@@ -142,21 +150,30 @@ const routerMap = {
     icon: 'profile',
     component: view.blank
   },
-  lastest: {
-    path: 'lastestList',
-    name: '基础详情页',
-    // authority: {
-    //   role: 'admin'
-    // },
-    component: () => import('@/pages/admin/order/LastestList')
-  },
-  orderlist: {
-    path: 'lastestList',
+  ongoingorder: {
+    path: 'ongoingorder',
     name: '进行中的订单',
     // authority: {
     //   role: 'admin'
     // },
-    component: () => import('@/pages/admin/order/LastestList')
+    component: () => import('@/pages/admin/order/OngoingOrder')
+  },
+  orderlist: {
+    path: 'orderlist',
+    name: '订单列表',
+    // authority: {
+    //   role: 'admin'
+    // },
+    component: () => import('@/pages/admin/order/OrderList')
+  },
+  orderdetail: {
+    path: 'orderdetail',
+    name: '订单详情',
+    invisible: true,
+    // authority: {
+    //   role: 'admin'
+    // },
+    component: () => import('@/pages/admin/order/OrderDetail')
   },
   //技术员页面
   history: {
@@ -212,7 +229,7 @@ const routerMap = {
   },
   personalinfo: {
     path: 'personalinfo',
-    name: '个人信息',
+    name: '个人中心',
     // authority: {
     //   role: 'staff'
     // },

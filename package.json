@@ -25,6 +25,7 @@
     "highlight.js": "^10.2.1",
     "js-cookie": "^2.2.1",
     "marked": "^4.0.16",
+    "mavon-editor": "^2.10.4",
     "mockjs": "^1.1.0",
     "nprogress": "^0.2.0",
     "qs": "^6.10.3",

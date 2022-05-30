@@ -6,6 +6,7 @@
             <a-tab-pane tab="普通用户" key="1"></a-tab-pane>
             <a-tab-pane tab="技术员" key="2"></a-tab-pane>
             <a-tab-pane tab="管理员" key="3"></a-tab-pane>
+            <a-tab-pane tab="所有" key="4"></a-tab-pane>
           </a-tabs>
         </div>
       </div>
@@ -29,6 +30,8 @@ export default {
           return '2'
         case '/user/userlist/admin':
           return '3'
+        case '/user/userlist/userall':
+          return '4'
         default:
           return '1'
       }
@@ -45,6 +48,9 @@ export default {
           break
         case '3':
           this.$router.push('/user/userlist/admin')
+          break
+        case '4':
+          this.$router.push('/user/userlist/userall')
           break
         default:
           this.$router.push('/workplace')

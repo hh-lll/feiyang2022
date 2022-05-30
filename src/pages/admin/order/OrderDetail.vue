@@ -1,38 +1,20 @@
 <template>
-  <page-layout :title="'订单号：'+orderId">
+  <page-layout :title="'订单号：'+ orderInfo.orderId">
     <detail-list size="small" :col="2" slot="headerContent">
-      <detail-list-item term="客户ID">1</detail-list-item>
-      <detail-list-item term="技术员ID">21</detail-list-item>
-      <detail-list-item term="创建时间">2018-08-07</detail-list-item>
-      <detail-list-item term="结束时间">2018-12-11</detail-list-item>
-      <detail-list-item term="维修类型">"电脑太旧，清个灰"</detail-list-item>
-      <detail-list-item term="维修进度">等待接单</detail-list-item>
+      <detail-list-item term="客户ID">{{userInfo.userId?userInfo.userId:'无'}}</detail-list-item>
+      <detail-list-item term="技术员ID">{{staffInfo.userId?userInfo.userId:'无'}}</detail-list-item>
+      <detail-list-item term="创建时间">{{orderInfo.createTime?orderInfo.createTime:'无'}}</detail-list-item>
+      <detail-list-item term="结束时间">{{orderInfo.closeTime?orderInfo.closeTime:'无'}}</detail-list-item>
+      <detail-list-item term="维修类型">{{orderInfo.repairType}}</detail-list-item>
     </detail-list>
-    <!-- <template slot="extra">
-      <head-info title="状态" content="待审批" />
-      <head-info title="订单金额" content="¥ 568.08" />
-    </template> -->
     <template slot="action">
-      <a-button-group style="margin-right: 8px;">
-        <a-button>操作</a-button>
-        <a-button>操作</a-button>
-        <a-button><a-icon type="ellipsis"/></a-button>
-      </a-button-group>
-      <a-button type="primary" >主操作</a-button>
+      <a-button type="primary" @click="cancelOrder">取消订单</a-button>
     </template>
     <a-card :bordered="false" title="维修进度">
-      <a-steps :current="3" progress-dot :direction="isMobile ? 'vertical' : 'horizontal'">
+      <a-steps :current="orderInfo.status" progress-dot :direction="isMobile ? 'vertical' : 'horizontal'">
         <a-step title="创建订单">
-          <a-step-item-group :align="isMobile ? 'left' : 'center'" slot="description">
-            <a-step-item link="/dashboard/workplace" title="曲丽丽" icon="dingding-o"/>
-            <a-step-item title="2016-12-12 12:32"/>
-          </a-step-item-group>
         </a-step>
         <a-step title="等待接单">
-          <a-step-item-group :align="isMobile ? 'left' : 'center'" slot="description">
-            <a-step-item link="/form/step" title="周毛毛" icon="dingding-o" />
-            <a-step-item link="/result/success" title="催一下" icon="bell"/>
-          </a-step-item-group>
         </a-step>
         <a-step title="技术员已经接单">
         </a-step>
@@ -42,72 +24,136 @@
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false" title="用户信息">
       <detail-list>
-        <detail-list-item term="用户ID">付晓晓</detail-list-item>
-        <detail-list-item term="用户名">32943898021309809423</detail-list-item>
-        <detail-list-item term="QQ号">3321944288191034921</detail-list-item>
-        <detail-list-item term="手机号">18112345678</detail-list-item>
-        <detail-list-item term="Email">浙江省杭州市西湖区黄姑山路工专路交叉路口</detail-list-item>
+        <detail-list-item term="用户ID">{{userInfo.userId}}</detail-list-item>
+        <detail-list-item term="用户名">{{userInfo.username}}</detail-list-item>
+        <detail-list-item term="QQ号">{{userInfo.qqNumber}}</detail-list-item>
+        <detail-list-item term="手机号">{{userInfo.phoneNumber}}</detail-list-item>
+        <detail-list-item term="Email">{{userInfo.email}}</detail-list-item>
       </detail-list>
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false" title="技术员信息">
       <detail-list>
-        <detail-list-item term="技术员ID">付晓晓</detail-list-item>
-        <detail-list-item term="用户名">32943898021309809423</detail-list-item>
-        <detail-list-item term="QQ号">3321944288191034921</detail-list-item>
-        <detail-list-item term="手机号">18112345678</detail-list-item>
-        <detail-list-item term="Email">浙江省杭州市西湖区黄姑山路工专路交叉路口</detail-list-item>
+        <detail-list-item term="用户ID">{{staffInfo.userId}}</detail-list-item>
+        <detail-list-item term="用户名">{{staffInfo.username}}</detail-list-item>
+        <detail-list-item term="QQ号">{{staffInfo.qqNumber}}</detail-list-item>
+        <detail-list-item term="手机号">{{staffInfo.phoneNumber}}</detail-list-item>
+        <detail-list-item term="Email">{{staffInfo.email}}</detail-list-item>
       </detail-list>
+    </a-card>
+    <a-card style="margin-top: 24px" :bordered="false" title="设备信息">
+      <detail-list>
+        <detail-list-item term="类型">{{deviceInfo.type}}</detail-list-item>
+        <detail-list-item term="品牌">{{deviceInfo.brand}}</detail-list-item>
+        <detail-list-item term="版本">{{deviceInfo.version}}</detail-list-item>
+        <detail-list-item term="保修状态">{{deviceInfo.guaranteeStatus}}</detail-list-item>
+      </detail-list>
+    </a-card>
+    <a-card style="margin-top: 24px" :bordered="false" title="报修内容">
+      {{orderInfo.repairInstruction}}
+      <div>
+      <img :src="orderInfo.repairImage" alt="" style="height: 300px;margin-top: 20px;"></div>
     </a-card>
   </page-layout>
 </template>
 
 <script>
+import { renderTime } from "@/utils/render-time";
 import PageLayout from '@/layouts/PageLayout'
 import DetailList from '@/components/tool/DetailList'
-import AStepItem from '@/components/tool/AStepItem'
-import {operation1, operation2, operation3, operationColumns} from '@/mock/common/tableData'
+// import AStepItem from '@/components/tool/AStepItem'
 import {mapState} from 'vuex'
 // import HeadInfo from '@/components/tool/HeadInfo';
 
 
 const DetailListItem = DetailList.Item
-const AStepItemGroup = AStepItem.Group
-
-const tabList = [
-  {
-    key: '1',
-    tab: '操作日志一'
-  },
-  {
-    key: '2',
-    tab: '操作日志二'
-  },
-  {
-    key: '3',
-    tab: '操作日志三'
-  }
-]
+// const AStepItemGroup = AStepItem.Group
 
 export default {
   name: 'AdvancedDetail',
   // components: {HeadInfo, AStepItemGroup, AStepItem, DetailListItem, DetailList, PageLayout},
-  components: {AStepItemGroup, AStepItem, DetailListItem, DetailList, PageLayout},
+  components: {DetailListItem, DetailList, PageLayout},
   data () {
     return {
-      tabList,
-      operationColumns,
-      operation1,
-      operation2,
-      operation3,
-      activeTabKey: '2'
+      orderInfo:{
+        orderId:"",
+        createTime:"",
+        closeTime:"",
+        cancelReason:"",
+        repairType:"",
+        repairInstruction:"",
+        repairImage:"",
+        status:0,
+      },
+      userInfo:{
+        email:"",
+        username:"",
+        userId:"",
+        phoneNumber:"",
+        isVip:"",
+        vipId:"",
+        qqNumber:"",
+      },
+      staffInfo:{
+        email:"",
+        username:"",
+        userId:"",
+        phoneNumber:"",
+        qqNumber:"",
+      },
+      deviceInfo:{
+        version:"",
+        guaranteeStatus:"",
+        type:"",
+        brand:"",
+      },
     }
   },
   computed: {
     ...mapState('setting', ['isMobile'])
   },
+  mounted(){
+    this.getDataFromRoute();
+    console.log(this.orderInfo);
+    console.log(this.userInfo.userId);
+    console.log(this.staffInfo.userId);
+  },
   methods: {
     onTabChange (key) {
       console.log(key)
+    },
+    getDataFromRoute() {
+      let params = this.$route.params;
+      console.log("params",params);
+      this.orderInfo.orderId = params.order_id;
+      this.orderInfo.createTime = renderTime(params.create_time);
+      this.orderInfo.closeTime = renderTime(params.close_time);
+      this.orderInfo.cancelReason = params.cancel_reason;
+      this.orderInfo.repairType = params.repair_type;
+      this.orderInfo.repairInstruction = params.repair_instruction;
+      this.orderInfo.repairImage = params.repair_image;
+      this.orderInfo.status = params.status;
+
+      this.userInfo.email = params.user_email;
+      this.userInfo.username = params.user_username;
+      this.userInfo.userId = params.user_user_id;
+      this.userInfo.phoneNumber = params.user_phone_number;
+      this.userInfo.isVip = params.user_is_vip;
+      this.userInfo.vipId = params.user_vip_id;
+      this.userInfo.qqNumber = params.user_qq_number;
+
+      this.staffInfo.email = params.staff_email;
+      this.staffInfo.username = params.staff_username;
+      this.staffInfo.userId = params.staff_id;
+      this.staffInfo.phoneNumber = params.staff_phone_number;
+      this.staffInfo.qqNumber = params.staff_qq_number;
+      
+      this.deviceInfo.version = params.device_version;
+      this.deviceInfo.guaranteeStatus = params.guarantee_status;
+      this.deviceInfo.type = params.device_type;
+      this.deviceInfo.brand = params.device_brand;
+    },
+    cancelOrder(){
+      
     }
   },
 }

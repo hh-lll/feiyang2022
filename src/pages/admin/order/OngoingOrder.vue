@@ -145,7 +145,7 @@ export default {
       that.allOrderNum = res.data.otherData.page.rows;
       that.orderData = res.data.data;
       that.pagination.total = res.data.otherData.page.rows;
-      console.log(that.orderData);
+      console.log(that.allOrderNum);
     });
   },
 };

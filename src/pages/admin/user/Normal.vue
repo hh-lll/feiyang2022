@@ -25,7 +25,7 @@
               <a-avatar
                 class="card-avatar"
                 slot="avatar"
-                :src="item.avatar"
+                :src="item.avatarUrl"
                 size="large"
               />
               <div class="meta-content" slot="description">
@@ -87,10 +87,12 @@ export default {
       }
     },
     toDetail(item) {
-      console.log("toDetail",item);
+      localStorage.removeItem("normaID");
+      localStorage.setItem("normaID",JSON.stringify(item.userId))
+      // console.log("toDetail",item);
       this.$router.push({
         name:"用户详情",
-        params: item
+        // params: item
       })
     }
     
@@ -106,6 +108,7 @@ export default {
     normalList().then(function (res) {
       that.dataSource = res.data.data;
       that.BdataSource = res.data.data;
+      console.log(that.dataSource);
     });
   },
 };

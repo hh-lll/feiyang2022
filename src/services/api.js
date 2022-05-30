@@ -6,6 +6,7 @@ const LOGIN_URL = process.env.VUE_APP_API_BASE_URL
 module.exports = {
   // LOGIN: `${LOGIN_URL}/login`,
   LOGIN: `${FY_URL}/admin/login`,
+  GETUSERINFO: `${FY_URL}/user/getUserInfo`,
   LOGINSTAFF: `${FY_URL}/user/login`,
   GETCODE: `${FY_URL}/user/sendCode`,
   ROUTES: `${LOGIN_URL}/routes`, //可注释
@@ -14,7 +15,16 @@ module.exports = {
   ORDER_QUERY: `${FY_URL}/order/query`,
   USER_LIST: `${FY_URL}/user/all`,
   USER_UPDATE: `${FY_URL}/user/update`,
-  STAFF_ALLOW: `${FY_URL}/staff/update`,
+  STAFF_UPDATE: `${FY_URL}/staff/update`,
   STAFF_ADD: `${FY_URL}/staff/add`,
   QUESTION_ALL: `${FY_URL}/question/all`,
+  ADMIN_DASH_DATA: `${FY_URL}/admin/global`,
+  QANDP_LIST: `${FY_URL}/post/postAndQuestion`,
+  EXAMINE_LIST: `${FY_URL}/post/getNoExamine`,
+  PASS_POST: `${FY_URL}/post/update`,
+  NOPASS_POST: `${FY_URL}/post/delete`,
+  UPLOAD_FILE: `${FY_URL}/order/uploadFile`,
+  POST_ADD: `${FY_URL}/post/add`,
+  STAFF_YEAR: `${FY_URL}/staff/year`,
+  
 }

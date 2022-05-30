@@ -1,71 +1,160 @@
 <template>
   <page-layout :avatar="currUser.avatar">
-    <div slot="headerContent">
-      <div class="title wel-title">{{welcome.timeFix[lang]}}，{{currUser.name}}，{{welcome.message[lang]}}</div>
-    </div>
-    <template slot="extra">
-      <head-info class="split-right" :title="$t('project')" content="56"/>
-      <head-info class="split-right" :title="$t('ranking')" content="8/24"/>
-      <!-- <head-info class="split-right" :title="$t('visit')" content="2,223"/> -->
-    </template>
     <template>
       <a-row style="margin: 0 -12px">
-        <a-col style="padding: 0 12px" :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
-          <a-card class="project-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" :title="$t('progress')" :body-style="{padding: 0}">
-            <a slot="extra">{{$t('all')}}</a>
+        <a-col
+          style="padding: 0 12px"
+          :xl="15"
+          :lg="24"
+          :md="24"
+          :sm="24"
+          :xs="24"
+        >
+          <a-card
+            class="project-list"
+            :loading="loading"
+            style="margin-bottom: 24px"
+            :bordered="false"
+            :title="$t('operationdata')"
+            :body-style="{ padding: 0 }"
+          >
             <div>
-              <a-card-grid :key="i" v-for="(item, i) in projects">
-                <a-card :bordered="false" :body-style="{padding: 0}">
-                  <a-card-meta :description="item.desc">
-                    <div slot="title" class="card-title">
-                      <a-avatar size="small" :src="item.logo" />
-                      <span>Alipay</span>
-                    </div>
-                  </a-card-meta>
-                  <div class="project-item">
-                    <a class="group" href="/#/">科学搬砖组</a>
-                    <span class="datetime">9小时前</span>
-                  </div>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="今日报修" :content="TodayOrder" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="本周报修" :content="ThisWeek" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="本月报修" :content="ThisMonth" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="总技术员" :content="ALLStaffs" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="总用户数" :content="AllUsers" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="总订单数" :content="TotalOrder" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="总问答数" :content="TotalQuestion" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="总会员数" :content="TotalVips" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="总反馈数" :content="TotalFeedback" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="总管理数" :content="ALLStaffs" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="全局年份" content="56" />
+                </a-card>
+              </a-card-grid>
+              <a-card-grid>
+                <a-card :bordered="false" :body-style="{ padding: 0 }">
+                  <head-info title="全局配额" content="56" />
                 </a-card>
               </a-card-grid>
             </div>
           </a-card>
-          <a-card :loading="loading" :title="$t('dynamic')" :bordered="false">
-            <a-list>
-              <a-list-item :key="index" v-for="(item, index) in activities">
-                <a-list-item-meta>
-                  <a-avatar slot="avatar" :src="item.user.avatar" />
-                  <div slot="title" v-html="item.template" />
-                  <div slot="description">9小时前</div>
-                </a-list-item-meta>
-              </a-list-item>
-            </a-list>
-          </a-card>
+          
         </a-col>
-        <a-col style="padding: 0 12px" :xl="8" :lg="24" :md="24" :sm="24" :xs="24">
-          <a-card :title="$t('access')" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
+        <a-col
+          style="padding: 0 12px"
+          :xl="9"
+          :lg="24"
+          :md="24"
+          :sm="24"
+          :xs="24"
+        >
+          <a-card
+            :title="$t('access')"
+            style="margin-bottom: 24px"
+            :bordered="false"
+            :body-style="{ padding: 0 }"
+          >
             <div class="item-group">
               <a>问答审核</a>
               <a>用户管理</a>
               <a>订单管理</a>
-              <!-- <a-button size="small" type="primary" ghost icon="plus">{{$t('add')}}</a-button> -->
             </div>
           </a-card>
-          <a-card :loading="loading" :title="`XX ${$t('degree')}`" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
-            <div style="min-height: 400px;">
-              <radar />
+          <a-card
+            :loading="loading"
+            :title="$t('globalsetting')"
+            :bordered="false"
+          >
+            <div class="setting">配额状态:</div>
+            <div class="setting">
+              全局开关: &nbsp;
+              <a-select
+                default-value="on"
+                style="width: 120px"
+                @change="changeOnOff"
+              >
+                <a-select-option value="on"> 全部开启 </a-select-option>
+                <a-select-option value="off"> 全部关闭 </a-select-option>
+              </a-select>
             </div>
-          </a-card>
-          <a-card :loading="loading" :title="$t('team')" :bordered="false">
-            <div class="members">
-              <a-row>
-                <a-col :span="12" v-for="(item, index) in teams" :key="index">
-                  <a>
-                    <a-avatar size="small" :src="item.avatar" />
-                    <span class="member">{{item.name}}</span>
-                  </a>
-                </a-col>
-              </a-row>
+            <div class="setting">
+              时间年份：
+              <a-select
+                :default-value="year"
+                style="width: 120px"
+                @change="changeYear"
+              >
+                <a-select-option
+                  :value="item"
+                  :key="i"
+                  v-for="(item, i) in yearList"
+                >
+                  {{ item }}
+                </a-select-option>
+              </a-select>
+            </div>
+            <div class="setting">
+              每日限制：
+              <a-input-number
+                id="inputNumber"
+                v-model="limit"
+                :min="0"
+                @pressEnter="pressLimit"
+              />
+              tip: 确认后请回车
+            </div>
+            <div class="setting">
+              每日游客：
+              <a-input-number
+                id="inputNumber"
+                v-model="visitor"
+                :min="0"
+                @pressEnter="pressVisitor"
+              />
+              tip: 确认后请回车
             </div>
           </a-card>
         </a-col>
@@ -75,44 +164,93 @@
 </template>
 
 <script>
-import PageLayout from '@/layouts/PageLayout'
-import HeadInfo from '@/components/tool/HeadInfo'
-import Radar from '@/components/chart/Radar'
-import {mapState} from 'vuex'
-import {request, METHOD} from '@/utils/request'
+import HeadInfo from "@/components/tool/HeadInfo";
+import PageLayout from "@/layouts/PageLayout";
+import { adminDashData } from "@/services/dataSource";
+import { staffYear } from "@/services/edituser";
+import { mapState } from "vuex";
+// import func from "vue-editor-bridge";
+// import { request, METHOD } from "@/utils/request";
 
 export default {
-  name: 'WorkPlace',
-  components: {Radar, HeadInfo, PageLayout},
-  i18n: require('./i18n'),
-  data () {
+  name: "WorkPlace",
+  components: { PageLayout, HeadInfo },
+  i18n: require("./i18n"),
+  data() {
     return {
-      projects: [],
-      loading: true,
-      activities: [],
-      teams: [],
-      welcome: {
-        timeFix: '',
-        message: ''
-      }
-    }
+      TotalVips: 0,
+      TotalFeedback: 0,
+      ALLStaffs: 0,
+      TotalAdmin: 0,
+      ThisWeek: 0,
+      ThisMonth: 0,
+      AllUsers: 0,
+      TodayOrder: 0,
+      TotalOrder: 0,
+      TotalQuestion: 0,
+      globalData: {},
+      globalYear: "",
+      yearList: [],
+      globalOnOff: true,
+      limit:0,
+      visitor:0,
+    };
   },
   computed: {
-    ...mapState('account', {currUser: 'user'}),
-    ...mapState('setting', ['lang'])
+    ...mapState("account", { currUser: "user" }),
+    ...mapState("setting", ["lang"]),
   },
   created() {
-    request('/user/welcome', METHOD.GET).then(res => this.welcome = res.data)
-    request('/work/activity', METHOD.GET).then(res => this.activities = res.data)
-    request('/work/team', METHOD.GET).then(res => this.teams = res.data)
-    request('/project', METHOD.GET).then(res => {
-        this.projects = res.data
-        this.loading = false
+    let nowdate = new Date();
+    this.year = nowdate.getFullYear();
+  },
+  mounted() {
+    let nowdate = new Date();
+    let year = nowdate.getFullYear();
+    year++;
+    console.log(year);
+    for (let i = 0; i < 5; i++) {
+      this.yearList.push(year--);
+      console.log("第" + i + "个" + this.yearList[i]);
+    }
+    adminDashData(new Date().getFullYear()).then((res) => {
+      let data = res.data.data
+      this.ALLStaffs = data.ALLStaffs
+      this.TotalVips = data.TotalFeedback
+      this.TotalFeedback = data.TotalFeedback
+      this.TotalAdmin = data.TotalAdmin
+      this.ThisWeek = data.ThisWeek
+      this.ThisMonth = data.ThisMonth
+      this.AllUsers = data.AllUsers
+      this.TodayOrder = data.TodayOrder
+      this.TotalQuestion = data.TotalQuestion
+    });
+  },
+  methods:{
+    changeOnOff(){
+
+    },
+    changeYear(year){
+      console.log(year);
+      staffYear(year).then((res)=>{
+        if(res.status == 200){
+          this.$message.success("已成功将技术员年份设置为"+year)
+        }
       })
+    },
+    pressLimit(){
+      console.log("blurLimitblurLimitblurLimitblurLimit",this.limit);
+    },
+    pressVisitor(){
+      console.log("blurLimitblurLimitblurLimitblurLimit",this.visitor);
+    }
   }
-}
+};
 </script>
 
 <style lang="less">
 @import "index";
+.setting {
+  height: 50px;
+}
 </style>

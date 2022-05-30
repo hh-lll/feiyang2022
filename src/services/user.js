@@ -1,4 +1,4 @@
-import {LOGIN, GETCODE,LOGINSTAFF} from '@/services/api'
+import {LOGIN, GETCODE,LOGINSTAFF,GETUSERINFO} from '@/services/api'
 import {request, METHOD, removeAuthorization} from '@/utils/request'
 import Qs from 'qs'
 /**
@@ -18,6 +18,12 @@ export async function loginStaff(phoneNumber) {
   return request(LOGINSTAFF, METHOD.POST, Qs.parse({
     "phoneNumber": phoneNumber,
   }))
+}
+
+export async function getUserInfo(userId) {
+  return request(GETUSERINFO, METHOD.GET, {
+    "user_id": userId,
+  })
 }
 
 export async function getCode(phoneNumber) {

@@ -24,13 +24,7 @@
         >
       </detail-list>
       <detail-list v-else size="small" col="1" slot="headerContent">
-        <detail-list-item term="用户ID"
-          ><a-input
-            v-model="userData.userId"
-            style="width: 120px"
-            size="small"
-          ></a-input
-        ></detail-list-item>
+        <detail-list-item term="用户ID">{{ userData.userId }}</detail-list-item>
         <detail-list-item term="用户名"
           ><a-input
             v-model="userData.username"
@@ -59,7 +53,13 @@
             size="small"
           ></a-input
         ></detail-list-item>
-        <detail-list-item term="是否为VIP"
+        <detail-list-item term="是否为VIP">{{
+          userData.isVip ? "是" : "否"
+        }}</detail-list-item>
+        <detail-list-item term="VIP号">{{
+          userData.vipId ? this.userData.vipId : "无"
+        }}</detail-list-item>
+        <!-- <detail-list-item term="是否为VIP"
           ><a-radio-group v-model="userData.isVip">
             <a-radio :value="1">是</a-radio>
             <a-radio :value="0">否</a-radio>
@@ -71,7 +71,7 @@
             style="width: 120px"
             size="small"
           ></a-input
-        ></detail-list-item>
+        ></detail-list-item> -->
         <detail-list-item
           ><a-button type="primary" @click="submitEdit"
             >保存信息</a-button
@@ -110,14 +110,6 @@
       </detail-list>
     </div>
     <a-card style="margin-top: 24px" :bordered="false" title="订单列表">
-      <div slot="extra">
-        <a-radio-group>
-          <a-radio-button>全部</a-radio-button>
-          <a-radio-button>进行中</a-radio-button>
-          <a-radio-button>等待中</a-radio-button>
-        </a-radio-group>
-        <a-input-search style="margin-left: 16px; width: 272px" />
-      </div>
       <a-table
         :columns="columns"
         :row-key="(record) => record.orderId"
@@ -159,7 +151,7 @@
         <a-button
           slot="edit"
           slot-scope="text, record"
-          @click="() => toEditNotice(record)"
+          @click="() => toOrderDetail(record)"
         >
           详情
         </a-button>
@@ -173,21 +165,21 @@ import DetailList from "@/components/tool/DetailList";
 import { renderTime } from "@/utils/render-time";
 import { userInfoEdit } from "@/services/edituser";
 import { userUrban, staffAdd } from "@/services/edituser";
+import { getUserInfo } from "@/services/user";
 import { orderForUser } from "@/services/dataSource";
 const DetailListItem = DetailList.Item;
 const columns = [
   {
     title: "订单编号",
-    dataIndex: "orderId",
-    width: "20%",
-  },
-  {
-    title: "用户编号",
-    dataIndex: "userId",
+    dataIndex: "order_id",
   },
   {
     title: "维修员编号",
-    dataIndex: "staffId",
+    dataIndex: "staff_id",
+  },
+  {
+    title: "维修员名称",
+    dataIndex: "staff_username",
   },
   {
     title: "订单进度",
@@ -198,7 +190,7 @@ const columns = [
   },
   {
     title: "维修类型",
-    dataIndex: "repairType",
+    dataIndex: "repair_type",
   },
 
   {
@@ -231,13 +223,23 @@ export default {
     };
   },
   methods: {
-    getDataFromRoute(callback) {
-      this.userData = this.$route.params;
-      this.userData.createTime = renderTime(this.userData.createTime);
-      console.log(this.userData);
-      if (typeof callback == "function") {
-        callback();
-      }
+    // getDataFromRoute(callback) {
+    getDataFromRoute() {
+      // this.userData = this.$route.params;
+      let userId = JSON.parse(localStorage.getItem("normaID"));
+      getUserInfo(userId).then((res) => {
+        console.log("getUserInfo(userId).then((res) => {", res.data);
+        // this.userData = res.data.data.userInfo.map((item) => {
+        //   item.createTime = renderTime(item.createTime);
+        //   return item;
+        // });
+        this.userData = res.data.data.userInfo;
+        this.userData.createTime = renderTime(this.userData.createTime);
+        console.log(this.userData);
+        // if (typeof callback == "function") {
+        //   callback();
+        // }
+      });
     },
     callEdit() {
       this.showEdit = true;
@@ -256,18 +258,32 @@ export default {
       userInfoEdit(userId, username, qqNumber, phoneNumber, email, isBan).then(
         (res) => {
           console.log(res);
+          if (res.status == 200) {
+            this.$message.success("修改用户信息成功！");
+          }
         }
       );
     },
     clickBan(userId, isBan) {
       userUrban(userId, isBan).then((res) => {
         this.userData.isBan = res.data.data.userInfo.isBan;
-        0;
+        if (res.status == 200) {
+          this.$message.success("修改用户报修状态成功！");
+        }
       });
     },
     clickIdentity(userId) {
       staffAdd(userId).then((res) => {
         console.log(res);
+        if (res.status == 200) {
+          this.$message.success("已成功将该用户设为技术员！");
+        }
+        setTimeout(
+          this.$router.push({
+            name: "技术员",
+          }),
+          5000
+        );
         this.userData.isStaff = 1;
       });
     },
@@ -283,21 +299,57 @@ export default {
         console.log(this.orderData);
       });
     },
+    toOrderDetail(record) {
+      console.log("record", record);
+      record.user_email = this.userData.email;
+      record.user_username = this.userData.username;
+      record.user_user_id = this.userData.userId;
+      record.user_phone_number = this.userData.phoneNumber;
+      record.user_is_vip = this.userData.isVip;
+      record.user_vip_id = this.userData.vipId;
+      record.user_qq_number = this.userData.qqNumber;
+      this.$router.push({
+        name: "订单详情",
+        params: record,
+      });
+    },
   },
   mounted() {
-    console.log("进入mounted");
     let that = this;
+      let userId = JSON.parse(localStorage.getItem("normaID"));
+      console.log("let userIdlet userIdlet userIdlet userId",userId);
     // 先获取用户的ID，然后用ID去查找用户相关的订单
     // 回调写得好丑，先这样，后期改
-    this.getDataFromRoute(function () {
-      let userId = that.userData.userId;
+    // this.getDataFromRoute(function () {
+    this.getDataFromRoute();
       //获取第一页的订单
       orderForUser(1, userId).then(function (res) {
         that.orderData = res.data.data;
         that.pagination.total = res.data.otherData.page.rows;
       });
-    });
+    // });
   },
+  beforeUpdate(){
+    let userId = JSON.parse(localStorage.getItem("normaID")); 
+    console.log("let userIdlet userIdlet userIdlet userId",userId); 
+  },
+  updated(){
+    let userId = JSON.parse(localStorage.getItem("normaID")); 
+    console.log("let userIdlet userIdlet userIdlet userId",userId); 
+  }
+  // beforeUpdate() {
+  //   let that = this;
+  //   // 先获取用户的ID，然后用ID去查找用户相关的订单
+  //   // 回调写得好丑，先这样，后期改
+  //   this.getDataFromRoute(function () {
+  //     let userId = that.userData.userId;
+  //     //获取第一页的订单
+  //     orderForUser(1, userId).then(function (res) {
+  //       that.orderData = res.data.data;
+  //       that.pagination.total = res.data.otherData.page.rows;
+  //     });
+  //   });
+  // },
 };
 </script>
 

@@ -1,27 +1,7 @@
 <template>
   <div>
-    <a-card :bordered="false">
-      <div style="display: flex; flex-wrap: wrap">
-        <head-info
-          title="总订单量"
-          :content="allOrderNum + '个'"
-          :bordered="true"
-        />
-        <head-info
-          title="本周订单平均处理时间"
-          content="32分钟"
-          :bordered="true"
-        />
-        <head-info title="本月订单量" content="24个" />
-      </div>
-    </a-card>
     <a-card style="margin-top: 24px" :bordered="false" title="订单列表">
       <div slot="extra">
-        <a-radio-group>
-          <a-radio-button>全部</a-radio-button>
-          <a-radio-button>进行中</a-radio-button>
-          <a-radio-button>等待中</a-radio-button>
-        </a-radio-group>
         <a-input-search style="margin-left: 16px; width: 272px" />
       </div>
       <a-table
@@ -65,7 +45,7 @@
         <a-button
           slot="edit"
           slot-scope="text, record"
-          @click="() => toEditNotice(record)"
+          @click="() => toOrderDetail(record)"
         >
           详情
         </a-button>
@@ -79,16 +59,24 @@ import { orderList } from "@/services/dataSource";
 const columns = [
   {
     title: "订单编号",
-    dataIndex: "orderId",
-    width: "20%",
+    dataIndex: "order_id",
+    // width: "20%",
   },
   {
     title: "用户编号",
-    dataIndex: "userId",
+    dataIndex: "user_user_id",
+  },
+  {
+    title: "用户名",
+    dataIndex: "user_username",
   },
   {
     title: "维修员编号",
-    dataIndex: "staffId",
+    dataIndex: "staff_id",
+  },
+  {
+    title: "维修员名称",
+    dataIndex: "staff_username",
   },
   {
     title: "订单进度",
@@ -99,9 +87,8 @@ const columns = [
   },
   {
     title: "维修类型",
-    dataIndex: "repairType",
+    dataIndex: "repair_type",
   },
-
   {
     title: "查看详情",
     key: "edit",
@@ -111,13 +98,10 @@ const columns = [
     },
   },
 ];
-import HeadInfo from "../../../components/tool/HeadInfo";
 export default {
   name: "StandardList",
-  components: { HeadInfo },
   data() {
     return {
-      allOrderNum: "",
       orderData: [],
       columns: columns,
       pagination: {
@@ -142,6 +126,13 @@ export default {
         console.log(this.orderData);
       });
     },
+    toOrderDetail(record) {
+      console.log("record", record);
+      this.$router.push({
+        name: "订单详情",
+        params: record,
+      });
+    },
   },
   mounted() {
     let that = this;
@@ -149,10 +140,8 @@ export default {
     //获取第一页的订单
     orderList(1).then(function (res) {
       console.log(res);
-      that.allOrderNum = res.data.otherData.page.rows;
       that.orderData = res.data.data;
       that.pagination.total = res.data.otherData.page.rows;
-      console.log(that.allOrderNum);
     });
   },
 };

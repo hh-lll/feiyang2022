@@ -1,6 +1,10 @@
 <template>
   <div>
-    <a-card style="margin-top: 24px" :bordered="false" title="基本信息"></a-card>
+    <a-card
+      style="margin-top: 24px"
+      :bordered="false"
+      title="基本信息"
+    ></a-card>
     <div class="user-wrap">
       <detail-list v-if="!showEdit" size="small" col="1" slot="headerContent">
         <detail-list-item term="用户ID">{{ userData.userId }}</detail-list-item>
@@ -25,13 +29,7 @@
         >
       </detail-list>
       <detail-list v-else size="small" col="1" slot="headerContent">
-        <detail-list-item term="用户ID"
-          ><a-input
-            v-model="userData.userId"
-            style="width: 120px"
-            size="small"
-          ></a-input
-        ></detail-list-item>
+        <detail-list-item term="用户ID">{{ userData.userId }}</detail-list-item>
         <detail-list-item term="用户名"
           ><a-input
             v-model="userData.username"
@@ -60,19 +58,13 @@
             size="small"
           ></a-input
         ></detail-list-item>
-        <detail-list-item term="是否为VIP"
-          ><a-radio-group v-model="userData.isVip">
-            <a-radio :value="1">是</a-radio>
-            <a-radio :value="0">否</a-radio>
-          </a-radio-group></detail-list-item
-        >
-        <detail-list-item term="VIP 号"
-          ><a-input
-            v-model="userData.vipId"
-            style="width: 120px"
-            size="small"
-          ></a-input
-        ></detail-list-item>
+
+        <detail-list-item term="是否为VIP">{{
+          userData.isVip ? "是" : "否"
+        }}</detail-list-item>
+        <detail-list-item term="VIP号">{{
+          userData.vipId ? this.userData.vipId : "无"
+        }}</detail-list-item>
         <detail-list-item
           ><a-button type="primary" @click="submitEdit"
             >保存信息</a-button
@@ -84,53 +76,97 @@
         <detail-list-item term="是否为技术员">{{
           userData.isStaff ? "是" : "否"
         }}</detail-list-item>
-        <detail-list-item term="是否禁止接单">{{
-          userData.isAllow ? "是" : "否"
-        }}</detail-list-item>
         <detail-list-item term="创建时间">{{
           userData.createTime
         }}</detail-list-item>
-        <detail-list-item>
-          <a-button v-if="userData.isBan" @click="clickBan(userData.userId, 0)"
-            >解除禁用</a-button
-          >
-          <a-button v-else @click="clickBan(userData.userId, 1)"
-            >禁止报修</a-button
-          >
-        </detail-list-item>
       </detail-list>
     </div>
-    <a-card style="margin-top: 24px" :bordered="false" title="技术员相关信息"></a-card>
+    <a-card
+      style="margin-top: 24px"
+      :bordered="false"
+      title="技术员相关信息"
+    ></a-card>
     <div class="staff-wrap">
-          <detail-list size="small" col="1" slot="headerContent">
-        <detail-list-item term="是否为技术员">{{
-          userData.isStaff ? "是" : "否"
-        }}</detail-list-item>
-        <detail-list-item term="是否禁止接单">{{
-          userData.isAllow ? "是" : "否"
-        }}</detail-list-item>
-        <detail-list-item term="创建时间">{{
-          userData.createTime
-        }}</detail-list-item>
-        <detail-list-item>
-          <a-button @click="subTechUpdate(userData.userId)"
-            >更新信息</a-button
-          >
-          <a-button @click="clickBan(userData.userId, 1)"
-            >禁止报修</a-button
-          >
-        </detail-list-item>
-      </detail-list>
+      <div style="display: flex">
+        <detail-list size="small" col="1" slot="headerContent">
+          <detail-list-item term="是否允许接单">
+            {{ staffData.isAllow ? "允许" : "禁止" }}
+            <a-button
+              style="margin-left: 20px"
+              v-if="staffData.isAllow"
+              @click="clickAllow(staffData.userId, 0)"
+              >禁止接单</a-button
+            >
+            <a-button
+              style="margin-left: 20px"
+              v-else
+              @click="clickAllow(staffData.userId, 1)"
+              >解除禁用</a-button
+            >
+          </detail-list-item>
+          <detail-list-item term="接单间隔" v-if="!showInterval"
+            >{{ staffData.receiveInterval
+            }}<a-button
+              type="primary"
+              style="margin-left: 20px"
+              @click="callInterval"
+              >编辑</a-button
+            >
+          </detail-list-item>
+          <detail-list-item term="接单间隔" v-else
+            ><a-input-number
+              v-model="staffData.receiveInterval"
+              style="width: 120px"
+              :min="0"
+              size="small"
+            ></a-input-number
+            ><a-button
+              type="primary"
+              style="margin-left: 20px"
+              @click="submitInterval"
+              >保存</a-button
+            >
+          </detail-list-item>
+        </detail-list>
+        <detail-list size="small" col="1" slot="headerContent">
+          <detail-list-item term="订单数">{{
+            staffData.repairCount
+          }}</detail-list-item>
+          <detail-list-item term="问答数">{{
+            staffData.postCount
+          }}</detail-list-item>
+          <detail-list-item term="所属年份">{{
+            staffData.year
+          }}</detail-list-item>
+        </detail-list>
       </div>
+      <div>
+        <div style="color: black">技术员简介：</div>
+        <div v-if="!showTip">
+          <div style="width: 60%; padding: 20px">{{ staffData.tips }}</div>
+          <a-button
+            type="primary"
+            style="margin-left: 20px"
+            @click="callTip"
+          >
+            编辑
+          </a-button>
+        </div>
+        <div v-else>
+          <div style="width: 60%; padding: 20px">
+            <a-textarea v-model="staffData.tips"/>
+            </div>
+          <a-button
+            type="primary"
+            style="margin-left: 20px"
+            @click="submitTip"
+          >
+            保存
+          </a-button>
+        </div>
+      </div>
+    </div>
     <a-card style="margin-top: 24px" :bordered="false" title="订单列表">
-      <div slot="extra">
-        <a-radio-group>
-          <a-radio-button>全部</a-radio-button>
-          <a-radio-button>进行中</a-radio-button>
-          <a-radio-button>等待中</a-radio-button>
-        </a-radio-group>
-        <a-input-search style="margin-left: 16px; width: 272px" />
-      </div>
       <a-table
         :columns="columns"
         :row-key="(record) => record.orderId"
@@ -172,7 +208,7 @@
         <a-button
           slot="edit"
           slot-scope="text, record"
-          @click="() => toEditNotice(record)"
+          @click="() => toOrderDetail(record)"
         >
           详情
         </a-button>
@@ -184,23 +220,25 @@
 <script>
 import DetailList from "@/components/tool/DetailList";
 import { renderTime } from "@/utils/render-time";
-import { userInfoEdit } from "@/services/edituser";
-import { userUrban,staffAdd,staffUpdate } from "@/services/edituser";
+import { staffAllow } from "@/services/edituser";
+import { userInfoEdit, staffInterval, staffTip } from "@/services/edituser";
+import { staffUpdate } from "@/services/edituser";
+import { getUserInfo } from "@/services/user";
 import { orderForUser } from "@/services/dataSource";
 const DetailListItem = DetailList.Item;
 const columns = [
   {
     title: "订单编号",
-    dataIndex: "orderId",
-    width: "20%",
+    dataIndex: "order_id",
+    // width: "20%",
   },
   {
     title: "用户编号",
-    dataIndex: "userId",
+    dataIndex: "user_user_id",
   },
   {
-    title: "维修员编号",
-    dataIndex: "staffId",
+    title: "用户名",
+    dataIndex: "user_username",
   },
   {
     title: "订单进度",
@@ -211,7 +249,7 @@ const columns = [
   },
   {
     title: "维修类型",
-    dataIndex: "repairType",
+    dataIndex: "repair_type",
   },
 
   {
@@ -232,7 +270,10 @@ export default {
       columns: columns,
       totalOrder: 80,
       userData: Object,
+      staffData: Object,
       showEdit: false,
+      showInterval: false,
+      showTip: false,
       pagination: {
         total: 0,
         current: 1,
@@ -244,16 +285,36 @@ export default {
     };
   },
   methods: {
-    getDataFromRoute(callback) {
-      this.userData = this.$route.params;
-      this.userData.createTime = renderTime(this.userData.createTime);
-      console.log(this.userData);
-      if (typeof callback == "function") {
-        callback();
-      }
-    },
     callEdit() {
       this.showEdit = true;
+    },
+    callInterval() {
+      this.showInterval = true;
+    },
+    callTip() {
+      this.showTip = true;
+    },
+    submitInterval() {
+      this.showInterval = false;
+      let userId = this.userData.userId;
+      let receiveInterval = this.staffData.receiveInterval;
+      staffInterval(userId, receiveInterval).then((res) => {
+        console.log(res);
+        if (res.status == 200) {
+          this.$message.success("修改技术员接单间隔成功！");
+        }
+      });
+    },
+    submitTip() {
+      this.showTip = false;
+      let userId = this.userData.userId;
+      let tips = this.staffData.tips;
+      staffTip(userId, tips).then((res) => {
+        console.log(res);
+        if (res.status == 200) {
+          this.$message.success("修改技术员简介成功！");
+        }
+      });
     },
     submitEdit() {
       this.showEdit = false;
@@ -269,26 +330,31 @@ export default {
       userInfoEdit(userId, username, qqNumber, phoneNumber, email, isBan).then(
         (res) => {
           console.log(res);
+          if (res.status == 200) {
+            this.$message.success("修改用户信息成功！");
+          }
         }
       );
     },
-    clickBan(userId, isBan) {
-      userUrban(userId, isBan).then((res) => {
-        this.userData.isBan = res.data.data.userInfo.isBan;
-        0;
+    clickAllow(userId, isALLow) {
+      staffAllow(userId, isALLow).then((res) => {
+        this.staffData.isAllow = res.data.data.isAllow;
+        if (res.data.data.isAllow == 0) {
+          this.$message.success("已禁止该技术员接单");
+        } else {
+          this.$message.success("已允许该技术员接单");
+        }
       });
     },
-    clickIdentity(userId){
-      staffAdd(userId).then((res)=>{
-        console.log(res);
-        this.userData.isStaff = 1;
-      })
-    },
-    subTechUpdate(userId){
-      staffUpdate(userId,21,"新华社天津5月19日电（记者白佳丽）5月19日上午，天津市第二中级人民法院对公益诉讼起诉人天津市人民检察院第二分院诉被告张某侵害著名农业科").then((res)=>{
+    subTechUpdate(userId) {
+      staffUpdate(
+        userId,
+        21,
+        "新华社天津5月19日电（记者白佳丽）5月19日上午，天津市第二中级人民法院对公益诉讼起诉人天津市人民检察院第二分院诉被告张某侵害著名农业科"
+      ).then((res) => {
         console.log(res);
         // this.userData.isStaff = 1;
-      })
+      });
     },
     handleTableChange(e) {
       console.log(e);
@@ -302,17 +368,41 @@ export default {
         console.log(this.orderData);
       });
     },
+    toOrderDetail(record) {
+      record.staff_email = this.userData.email;
+      record.staff_username = this.userData.username;
+      record.staff_id = this.userData.userId;
+      record.staff_phone_number = this.userData.phoneNumber;
+      record.staff_qq_number = this.userData.qqNumber;
+      console.log("record", record);
+      this.$router.push({
+        name: "订单详情",
+        params: record,
+      });
+    },
   },
   mounted() {
     console.log("进入mounted");
     let that = this;
-    this.getDataFromRoute(function () {
-      let userId = that.userData.userId;
-      //获取第一页的订单
-      orderForUser(1, userId).then(function (res) {
-        that.orderData = res.data.data;
-        that.pagination.total = res.data.otherData.page.rows;
-      });
+    let userId = JSON.parse(localStorage.getItem("staffID"));
+    getUserInfo(userId).then((res) => {
+      console.log("SSSSSSSSSSSSSgetUserInfo(userId).then((res) => {", res.data);
+      // this.userData = res.data.data.userInfo.map((item) => {
+      //   item.createTime = renderTime(item.createTime);
+      //   return item;
+      // });
+      this.staffData = res.data.data.staffInfo;
+      this.userData = res.data.data.userInfo;
+      this.userData.createTime = renderTime(this.userData.createTime);
+      console.log(this.userData);
+      // if (typeof callback == "function") {
+      //   callback();
+      // }
+    });
+    //获取第一页的订单
+    orderForUser(1, userId).then(function (res) {
+      that.orderData = res.data.data;
+      that.pagination.total = res.data.otherData.page.rows;
     });
   },
 };
@@ -339,9 +429,8 @@ export default {
   padding: 20px;
   font-size: 1.1em;
 }
-.staff-wrap{
+.staff-wrap {
   background-color: white;
-  // display: flex;
   padding: 20px;
   font-size: 1.1em;
 }

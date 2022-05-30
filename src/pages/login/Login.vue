@@ -38,19 +38,12 @@
               <a-row :gutter="8" style="margin: 0 -4px">
                 <a-col :span="16">
                   <a-input
-                    size="large"
+                    size="large" placeholder="请输入验证码"
                     v-decorator="[
                       'inputVerifyCode',
-                      {
-                        rules: [
-                          {
-                            message: '请输入验证码',
-                          },
-                        ],
-                      },
                     ]"
                   >
-                    <a-icon slot="prefix" type="mail" />
+                    <a-icon slot="prefix" type="mail"/>
                   </a-input>
                 </a-col>
                 <a-col :span="8" style="padding-left: 4px">
@@ -90,14 +83,14 @@
               <a-input
                 autocomplete="autocomplete"
                 size="large"
-                placeholder="admin"
+                placeholder="请输入用户名"
                 v-decorator="[
                   'name',
                   {
                     rules: [
                       {
                         required: true,
-                        message: '请输入账户名',
+                        message: '请输入用户名',
                         whitespace: true,
                       },
                     ],
@@ -110,7 +103,7 @@
             <a-form-item>
               <a-input
                 size="large"
-                placeholder="888888"
+                placeholder="请输入密码"
                 autocomplete="autocomplete"
                 type="password"
                 v-decorator="[
@@ -152,7 +145,6 @@ import { login, getCode, loginStaff } from "@/services/user";
 import { setAuthorization } from "@/utils/request";
 import { loadRoutes } from "@/utils/routerUtil";
 import { mapMutations } from "vuex";
-
 // import { marked } from "marked";
 
 export default {
@@ -169,17 +161,17 @@ export default {
         {
           router: "root",
           children: [
-            { router: "dashboard", children: ["workplace", "analysis"] },
+            { router: "dashboard", children: ["workplace"] },
             { router: "QandA", children: ["examine", "QandAlist"] },
             {
               router: "user",
               children: [
-                { router: "userlist", children: ["normal", "staff", "admin"] },
+                { router: "userlist", children: ["normal", "staff", "admin", "userall"] },
                 "userdetail",
                 "staffdetail",
               ],
             },
-            { router: "order", children: ["lastestList", "orderlist"] },
+            { router: "order", children: ["ongoingorder", "orderlist", "orderdetail"] },
           ],
         },
       ],

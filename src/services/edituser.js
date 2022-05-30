@@ -1,4 +1,4 @@
-import {USER_UPDATE,STAFF_ALLOW,STAFF_ADD} from './api'
+import {USER_UPDATE,STAFF_UPDATE,STAFF_ADD,STAFF_YEAR} from './api'
 import {METHOD, request} from '@/utils/request'
 import Qs from 'qs'
 
@@ -30,9 +30,21 @@ export async function userInfoEdit(userId,username,qqNumber,phoneNumber,email,is
 }
 
 export async function staffAllow(userId,isAllow) {
-  return request(STAFF_ALLOW, METHOD.GET, {
+  return request(STAFF_UPDATE, METHOD.GET, {
     userId: userId,
     isAllow: isAllow
+  })
+}
+export async function staffTip(userId,tips) {
+  return request(STAFF_UPDATE, METHOD.GET, {
+    userId: userId,
+    tips: tips
+  })
+}
+export async function staffInterval(userId,receiveInterval) {
+  return request(STAFF_UPDATE, METHOD.GET, {
+    userId: userId,
+    receiveInterval: receiveInterval
   })
 }
 export async function staffAdd(userId) {
@@ -40,11 +52,16 @@ export async function staffAdd(userId) {
     userId: userId,
   })
 }
-export async function staffUpdate(userId,receiveInterval,tips) {
-  return request(STAFF_ALLOW, METHOD.GET, {
-    userId: userId,
-    receiveInterval: receiveInterval,
-    tips: tips
+// export async function staffUpdate(userId,receiveInterval,tips) {
+//   return request(STAFF_UPDATE, METHOD.GET, {
+//     userId: userId,
+//     receiveInterval: receiveInterval,
+//     tips: tips
+//   })
+// }
+export async function staffYear(year) {
+  return request(STAFF_YEAR, METHOD.GET, {
+    year: year
   })
 }
-export default {userUrban,userInfoEdit,staffAllow,staffAdd,staffUpdate}
+export default {userUrban,userInfoEdit,staffAllow,staffAdd}

@@ -128,9 +128,9 @@ const options = {
           component: BlankView,
           children: [
             {
-              path: 'lastestList',
+              path: 'ongoingorder',
               name: '进行中的订单',
-              component: () => import('@/pages/admin/order/LastestList')
+              component: () => import('@/pages/admin/order/OngoingOrder')
             },
             {
               path: 'orderlist',

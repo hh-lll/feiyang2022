@@ -11,12 +11,6 @@
               <div style="margin-bottom: 3px" slot="title">
                 {{ item.username }}
               </div>
-              <a-avatar
-                class="card-avatar"
-                slot="avatar"
-                :src="item.avatar"
-                size="large"
-              />
               <div class="meta-content" slot="description">
                 创建时间：{{ item.createtime }}
               </div>

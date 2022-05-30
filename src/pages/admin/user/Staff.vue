@@ -1,15 +1,22 @@
 <template>
   <div class="card-list">
-    <div class="search-input">
-      <a-input-search
+    <div style="display: flex">
+      用户名：<a-input
         class="search-ipt"
-        style="width: 522px; margin-bottom: 20px"
+        style="width: 200px; margin: 0 20px 20px 0;"
         placeholder="请输入用户名"
-        size="large"
-        enterButton="搜索技术员"
+        size="middle"
         v-model="searchInput"
-        @search="onSearch"
       />
+      年份：
+      <a-select :default-value="year" style="width: 120px" @change="changeYear">
+        <a-select-option :value="item" :key="i" v-for="(item, i) in yearList">
+          {{ item }}
+        </a-select-option>
+      </a-select>
+      <a-button @click="onSearch">搜索</a-button>
+        <!-- enterButton="搜索技术员"
+         -->
     </div>
     <a-list
       :grid="{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }"
@@ -25,7 +32,7 @@
               <a-avatar
                 class="card-avatar"
                 slot="avatar"
-                :src="item.avatar"
+                :src="item.avatarUrl"
                 size="large"
               />
               <div class="meta-content" slot="description">
@@ -62,6 +69,7 @@ export default {
   name: "CardList",
   data() {
     return {
+      yearList: [],
       dataSource: [],
       BdataSource: [],
       searchInput: "",
@@ -93,23 +101,49 @@ export default {
       }
     },
     toDetail(item) {
-      console.log("toDetail",item);
+      localStorage.removeItem("staffID");
+      localStorage.setItem("staffID", JSON.stringify(item.userId));
+      console.log("toDetail", item);
       this.$router.push({
-        name:"技术员详情",
-        params: item
-      })
-    }
+        name: "技术员详情",
+        // params: item
+      });
+    },
   },
   mounted() {
     let that = this;
     console.log("进入mounted");
-    //获取所有公告
-    // GetOrder().then(function (res) {
+    let nowdate = new Date();
+    let year = nowdate.getFullYear();
+    year++;
+    console.log(year);
+    for (let i = 0; i < 5; i++) {
+      this.yearList.push(year--);
+      console.log("第" + i + "个" + this.yearList[i]);
+    }
     staffList().then(function (res) {
       console.log(res);
-      that.dataSource = res.data.data;
-      console.log(that.dataSource);
-      that.BdataSource = res.data.data;
+      let lineTocamel = JSON.parse(
+        JSON.stringify(res.data.data)
+          .replace(/receive_interval/g, "receiveInterval")
+          .replace(/create_time/g, "createTime")
+          .replace(/is_staff/g, "isStaff")
+          .replace(/is_vip/g, "isVip")
+          .replace(/order_transfer/g, "orderTransfer")
+          .replace(/qq_number/g, "qqNumber")
+          .replace(/vip_id/g, "vipId")
+          .replace(/is_ban/g, "isBan")
+          .replace(/next_time/g, "nextTime")
+          .replace(/user_id/g, "userId")
+          .replace(/repair_count/g, "repairCount")
+          .replace(/last_time/g, "lastTime")
+          .replace(/phone_number/g, "phoneNumber")
+          .replace(/is_allow/g, "isAllow")
+          .replace(/post_count/g, "postCount")
+          .replace(/avatar_url/g, "avatarUrl")
+      );
+      that.dataSource = lineTocamel;
+      that.BdataSource = lineTocamel;
     });
   },
 };

@@ -1,10 +1,8 @@
 module.exports = {
   messages: {
     CN: {
-      project: '订单总数',
-      ranking: '本月订单情况',
-      visit: '项目访问',
-      progress: '进行中的订单',
+      operationdata: '运营数据',
+      globalsetting: '全局状态',
       all: '全部订单',
       access: '便捷导航',
       dynamic: '动态',
