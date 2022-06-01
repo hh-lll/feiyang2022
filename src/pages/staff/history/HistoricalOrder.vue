@@ -1,9 +1,6 @@
 <template>
   <div>
     <a-card style="margin-top: 24px" :bordered="false" title="订单列表">
-      <div slot="extra">
-        <a-input-search style="margin-left: 16px; width: 272px" />
-      </div>
       <a-table
         :columns="columns"
         :row-key="(record) => record.orderId"
@@ -55,7 +52,8 @@
 </template>
 
 <script>
-import { orderList } from "@/services/dataSource";
+import { orderForUser } from "@/services/dataSource";
+import { mapGetters } from "vuex";
 const columns = [
   {
     title: "订单编号",
@@ -69,14 +67,6 @@ const columns = [
   {
     title: "用户名",
     dataIndex: "user_username",
-  },
-  {
-    title: "维修员编号",
-    dataIndex: "staff_id",
-  },
-  {
-    title: "维修员名称",
-    dataIndex: "staff_username",
   },
   {
     title: "订单进度",
@@ -101,6 +91,9 @@ const columns = [
 ];
 export default {
   name: "StandardList",
+  computed: {
+    ...mapGetters("account", ["user"]),
+  },
   data() {
     return {
       allOrderNum: "",
@@ -122,13 +115,18 @@ export default {
       let that = this;
       let current = e.current;
       that.pagination.current = current;
-      orderList(current).then(function (res) {
+      orderForUser(current,this.user.userId).then(function (res) {
         console.log(res);
         that.orderData = res.data.data;
         console.log(this.orderData);
       });
     },
     toOrderDetail(record) {
+      record.staff_email = this.user.email;
+      record.staff_username = this.user.username;
+      record.staff_id = this.user.userId;
+      record.staff_phone_number = this.user.phoneNumber;
+      record.staff_qq_number = this.user.qqNumber;
       console.log("record", record);
       this.$router.push({
         name: "订单详情",
@@ -140,7 +138,7 @@ export default {
     let that = this;
     console.log("进入mounted");
     //获取第一页的订单
-    orderList(1).then(function (res) {
+    orderForUser(1,this.user.userId).then(function (res) {
       console.log(res);
       that.allOrderNum = res.data.otherData.page.rows;
       that.orderData = res.data.data;

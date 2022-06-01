@@ -58,19 +58,12 @@
             size="small"
           ></a-input
         ></detail-list-item>
-        <detail-list-item term="是否为VIP"
-          ><a-radio-group v-model="userData.isVip">
-            <a-radio :value="1">是</a-radio>
-            <a-radio :value="0">否</a-radio>
-          </a-radio-group></detail-list-item
-        >
-        <detail-list-item term="VIP 号"
-          ><a-input
-            v-model="userData.vipId"
-            style="width: 120px"
-            size="small"
-          ></a-input
-        ></detail-list-item>
+        <detail-list-item term="是否为VIP">{{
+          userData.isVip ? "是" : "否"
+        }}</detail-list-item>
+        <detail-list-item term="VIP号">{{
+          userData.vipId ? this.userData.vipId : "无"
+        }}</detail-list-item>
         <detail-list-item
           ><a-button type="primary" @click="submitEdit"
             >保存信息</a-button
@@ -87,42 +80,88 @@
         }}</detail-list-item>
       </detail-list>
     </div>
-    <a-card
+        <a-card
       style="margin-top: 24px"
       :bordered="false"
       title="技术员相关信息"
     ></a-card>
     <div class="staff-wrap">
-      <detail-list size="small" col="1" slot="headerContent">
-        <detail-list-item term="是否禁止接单">{{
-          userData.isAllow ? "是" : "否"
-        }}</detail-list-item>
-        <detail-list-item term="接单间隔">{{
-          userData.createTime
-        }}</detail-list-item>
-        <detail-list-item>
-          <a-button @click="clickBan(userData.userId, 0)"
-            >编辑接单信息</a-button
+      <div style="display: flex">
+        <detail-list size="small" col="1" slot="headerContent">
+          <detail-list-item term="是否允许接单">
+            {{ staffData.isAllow ? "允许" : "禁止" }}
+          </detail-list-item>
+          <detail-list-item term="接单间隔" v-if="!showInterval"
+            >{{ staffData.receiveInterval
+            }}<a-button
+              type="primary"
+              style="margin-left: 20px"
+              @click="callInterval"
+              >编辑</a-button
+            >
+          </detail-list-item>
+          <detail-list-item term="接单间隔" v-else
+            ><a-input-number
+              v-model="staffData.receiveInterval"
+              style="width: 120px"
+              :min="0"
+              size="small"
+            ></a-input-number
+            ><a-button
+              type="primary"
+              style="margin-left: 20px"
+              @click="submitInterval"
+              >保存</a-button
+            >
+          </detail-list-item>
+        </detail-list>
+        <detail-list size="small" col="1" slot="headerContent">
+          <detail-list-item term="订单数">{{
+            staffData.repairCount
+          }}</detail-list-item>
+          <detail-list-item term="问答数">{{
+            staffData.postCount
+          }}</detail-list-item>
+          <detail-list-item term="所属年份">{{
+            staffData.year
+          }}</detail-list-item>
+        </detail-list>
+      </div>
+      <div>
+        <div style="color: black">技术员简介：</div>
+        <div v-if="!showTip">
+          <div style="width: 60%; padding: 20px">{{ staffData.tips }}</div>
+          <a-button
+            type="primary"
+            style="margin-left: 20px"
+            @click="callTip"
           >
-        </detail-list-item>
-      </detail-list>
-      <detail-list size="small" col="1" slot="headerContent">
-        <detail-list-item term="订单数">{{
-          userData.repairCount
-        }}</detail-list-item>
-        <detail-list-item term="问答数">{{
-          userData.postCount
-        }}</detail-list-item>
-      </detail-list>
+            编辑
+          </a-button>
+        </div>
+        <div v-else>
+          <div style="width: 60%; padding: 20px">
+            <a-textarea v-model="staffData.tips"/>
+            </div>
+          <a-button
+            type="primary"
+            style="margin-left: 20px"
+            @click="submitTip"
+          >
+            保存
+          </a-button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { renderTime } from "@/utils/render-time";
+import { getUserInfo } from "@/services/user";
 import DetailList from "@/components/tool/DetailList";
-import { userInfoEdit } from "@/services/edituser";
-import { staffUpdate } from "@/services/edituser";
+import { userInfoEdit, staffInterval, staffTip } from "@/services/edituser";
 const DetailListItem = DetailList.Item;
 
 export default {
@@ -134,12 +173,43 @@ export default {
   data() {
     return {
       userData: Object,
+      staffData: Object,
       showEdit: false,
+      showInterval: false,
+      showTip: false,
     };
   },
   methods: {
     callEdit() {
       this.showEdit = true;
+    },
+    callInterval() {
+      this.showInterval = true;
+    },
+    callTip() {
+      this.showTip = true;
+    },
+    submitInterval() {
+      this.showInterval = false;
+      let userId = this.userData.userId;
+      let receiveInterval = this.staffData.receiveInterval;
+      staffInterval(userId, receiveInterval).then((res) => {
+        console.log(res);
+        if (res.status == 200) {
+          this.$message.success("修改技术员接单间隔成功！");
+        }
+      });
+    },
+    submitTip() {
+      this.showTip = false;
+      let userId = this.userData.userId;
+      let tips = this.staffData.tips;
+      staffTip(userId, tips).then((res) => {
+        console.log(res);
+        if (res.status == 200) {
+          this.$message.success("修改技术员简介成功！");
+        }
+      });
     },
     submitEdit() {
       this.showEdit = false;
@@ -148,31 +218,25 @@ export default {
       let qqNumber = this.userData.qqNumber;
       let phoneNumber = this.userData.phoneNumber;
       let email = this.userData.email;
-      // let isVip = this.userData.isVip
-      // let vipId = this.userData.vipId
       let isBan = this.userData.isBan;
-      // userInfoEdit(userId,username,qqNumber,phoneNumber,email,isVip,vipId,isBan).then((res)=>{
       userInfoEdit(userId, username, qqNumber, phoneNumber, email, isBan).then(
         (res) => {
           console.log(res);
         }
       );
     },
-    subTechUpdate(userId) {
-      staffUpdate(
-        userId,
-        21,
-        "新华社天津5月19日电（记者白佳丽）5月19日上午，天津市第二中级人民法院对公益诉讼起诉人天津市人民检察院第二分院诉被告张某侵害著名农业科"
-      ).then((res) => {
-        console.log(res);
-        // this.userData.isStaff = 1;
-      });
-    },
+    
   },
   mounted() {
     console.log("进入mounted");
     console.log(this.user);
-    this.userData = this.user;
+    let userId = this.user.userId;
+    getUserInfo(userId).then((res) => {
+      this.staffData = res.data.data.staffInfo;
+      this.userData = res.data.data.userInfo;
+      this.userData.createTime = renderTime(this.userData.createTime);
+      console.log(this.userData);
+    });
   },
 };
 </script>
@@ -200,7 +264,6 @@ export default {
 }
 .staff-wrap {
   background-color: white;
-  display: flex;
   padding: 20px;
   font-size: 1.1em;
 }

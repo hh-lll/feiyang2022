@@ -1,9 +1,60 @@
 <template>
   <div>
-    <a-card style="margin-top: 24px" :bordered="false" title="订单列表">
-      <div slot="extra">
-        <a-input-search style="margin-left: 16px; width: 272px" />
+    <a-card style="margin-top: 24px" :bordered="false">
+      <div>
+        <div>
+          <a-row justify="start" :gutter="[0, 32]">
+            <a-col :md="12" :sm="24">
+              报修类型：
+              <a-input
+                placeholder="请输入类型"
+                style="width: 150px"
+                v-model="repairType"
+              />
+            </a-col>
+            <a-col :md="12" :sm="24">
+              订单状态：
+              <a-select
+                placeholder="请选择"
+                ref="select"
+                v-model="status"
+                style="width: 120px"
+                disabled="true"
+              >
+                <a-select-option value="取消">取消</a-select-option>
+                <a-select-option value="等待中">等待中</a-select-option>
+                <a-select-option value="进行中">进行中</a-select-option>
+                <a-select-option value="完成后">完成后</a-select-option>
+                <a-select-option value="全部">全部</a-select-option>
+              </a-select>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :md="12" :sm="24">
+              用户姓名：
+              <a-input
+                style="width: 150px"
+                placeholder="请输入用户姓名"
+                v-model="userName"
+              />
+            </a-col>
+            <a-col :md="12" :sm="24">
+              技术员姓名：
+              <a-input
+                style="width: 150px"
+                placeholder="请输入技术员姓名"
+                v-model="staffName"
+              />
+            </a-col>
+          </a-row>
+        </div>
+        <span style="float: right; margin-top: 3px">
+          <a-button type="primary" @click="submitQuery">查询</a-button>
+          <a-button style="margin-left: 8px" @click="clearQuery">重置</a-button>
+        </span>
       </div>
+    </a-card>
+    <a-card style="margin-top: 24px" :bordered="false">
       <a-table
         :columns="columns"
         :row-key="(record) => record.orderId"
@@ -79,7 +130,7 @@ const columns = [
     dataIndex: "staff_username",
   },
   {
-    title: "订单进度",
+    title: "订单状态",
     dataIndex: "status",
     scopedSlots: {
       customRender: "status",
@@ -89,7 +140,6 @@ const columns = [
     title: "维修类型",
     dataIndex: "repair_type",
   },
-
   {
     title: "查看详情",
     key: "edit",
@@ -103,9 +153,14 @@ export default {
   name: "StandardList",
   data() {
     return {
-      allOrderNum: "",
       orderData: [],
       columns: columns,
+
+      repairType: "",
+      status: "进行中",
+      userName: "",
+      staffName: "",
+
       pagination: {
         total: 0,
         current: 1,
@@ -122,7 +177,38 @@ export default {
       let that = this;
       let current = e.current;
       that.pagination.current = current;
-      orderList(current).then(function (res) {
+            let repairType = this.repairType;
+      let status = this.status;
+      let userName = this.userName;
+      let staffName = this.staffName;
+      if (repairType == "") {
+        repairType = null;
+      }
+      if (status == "全部") {
+        status = null;
+      }
+      else if(status == "取消"){
+        status = 0;
+      }else if(status == "等待中"){
+        status = 1;
+      }else if(status == "进行中"){
+        status = 2;
+      }else if(status == "完成后"){
+        status = 3;
+      }
+      if (userName == "") {
+        userName = null;
+      }
+      if (staffName == "") {
+        staffName = null;
+      }
+      orderList(
+        current,
+        repairType,
+        status,
+        staffName,
+        userName
+      ).then(function (res) {
         console.log(res);
         that.orderData = res.data.data;
         console.log(this.orderData);
@@ -135,17 +221,61 @@ export default {
         params: record,
       });
     },
+    submitQuery() {
+      let that = this;
+      console.log("this.repairType", this.repairType);
+      console.log("this.status", this.status);
+      console.log("this.userName", this.userName);
+      console.log("this.staffName", this.staffName);
+      let repairType = this.repairType;
+      let status = this.status;
+      let userName = this.userName;
+      let staffName = this.staffName;
+      if (repairType == "") {
+        repairType = null;
+      }
+      if (status == "全部") {
+        status = null;
+      }
+      else if(status == "取消"){
+        status = 0;
+      }else if(status == "等待中"){
+        status = 1;
+      }else if(status == "进行中"){
+        status = 2;
+      }else if(status == "完成后"){
+        status = 3;
+      }
+      if (userName == "") {
+        userName = null;
+      }
+      if (staffName == "") {
+        staffName = null;
+      }
+      orderList(1, repairType, status, staffName, userName).then(function (
+        res
+      ) {
+        console.log(res);
+        that.orderData = res.data.data;
+        that.pagination.total = res.data.otherData.page.rows;
+      });
+    },
+    clearQuery(){
+      this.repairType="";
+      this.repairType= "";
+      this.status= "全部";
+      this.userName= "";
+      this.staffName= "";
+    },
   },
   mounted() {
     let that = this;
     console.log("进入mounted");
     //获取第一页的订单
-    orderList(1).then(function (res) {
+    orderList(1,null,2).then(function (res) {
       console.log(res);
-      that.allOrderNum = res.data.otherData.page.rows;
       that.orderData = res.data.data;
       that.pagination.total = res.data.otherData.page.rows;
-      console.log(that.allOrderNum);
     });
   },
 };

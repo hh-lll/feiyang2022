@@ -162,13 +162,15 @@ export default {
           router: "root",
           children: [
             { router: "dashboard", children: ["workplace"] },
-            { router: "QandA", children: ["examine", "QandAlist"] },
+            { router: "QandA", children: ["examine", "QandAlist", "questdetail"] },
             {
               router: "user",
               children: [
                 { router: "userlist", children: ["normal", "staff", "admin", "userall"] },
                 "userdetail",
                 "staffdetail",
+                "admindetail",
+                "adminadd",
               ],
             },
             { router: "order", children: ["ongoingorder", "orderlist", "orderdetail"] },
@@ -184,7 +186,7 @@ export default {
             { router: "answer" },
             {
               router: "history",
-              children: ["personalorder", "personalpost"],
+              children: ["personalorder", "personalpost", "orderdetail",  "questdetail"],
             },
           ],
         },
@@ -249,6 +251,7 @@ export default {
           token: loginRes.data.token,
           expireAt: new Date(loginRes.data.expireAt),
         });
+        console.log("this.routerAdminrouterAdminrouterAdminrouterAdminrouterAdminrouterAdminrouterAdmin",this.routerAdmin);
         loadRoutes(this.routerAdmin);
         this.$router.push("/dashboard/workplace");
         this.$message.success(loginRes.message, 3);

@@ -1,95 +1,36 @@
 <template>
   <div>
-    <a-card style="margin-top: 24px" :bordered="false" title="问题列表">
-      <div :class="advanced ? 'search' : null">
-        <a-form layout="horizontal">
-          <div :class="advanced ? null : 'fold'">
-            <a-row>
-              <a-col :md="8" :sm="24">
-                <a-form-item
-                  label="规则编号"
-                  :labelCol="{ span: 5 }"
-                  :wrapperCol="{ span: 18, offset: 1 }"
-                >
-                  <a-input placeholder="请输入" />
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item
-                  label="使用状态"
-                  :labelCol="{ span: 5 }"
-                  :wrapperCol="{ span: 18, offset: 1 }"
-                >
-                  <a-select placeholder="请选择">
-                    <a-select-option value="1">关闭</a-select-option>
-                    <a-select-option value="2">运行中</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item
-                  label="调用次数"
-                  :labelCol="{ span: 5 }"
-                  :wrapperCol="{ span: 18, offset: 1 }"
-                >
-                  <a-input-number style="width: 100%" placeholder="请输入" />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row v-if="advanced">
-              <a-col :md="8" :sm="24">
-                <a-form-item
-                  label="更新日期"
-                  :labelCol="{ span: 5 }"
-                  :wrapperCol="{ span: 18, offset: 1 }"
-                >
-                  <a-date-picker
-                    style="width: 100%"
-                    placeholder="请输入更新日期"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item
-                  label="使用状态"
-                  :labelCol="{ span: 5 }"
-                  :wrapperCol="{ span: 18, offset: 1 }"
-                >
-                  <a-select placeholder="请选择">
-                    <a-select-option value="1">关闭</a-select-option>
-                    <a-select-option value="2">运行中</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item
-                  label="描述"
-                  :labelCol="{ span: 5 }"
-                  :wrapperCol="{ span: 18, offset: 1 }"
-                >
-                  <a-input placeholder="请输入" />
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </div>
-          <span style="float: right; margin-top: 3px">
-            <a-button type="primary">查询</a-button>
-            <a-button style="margin-left: 8px">重置</a-button>
-            <a @click="toggleAdvanced" style="margin-left: 8px">
-              {{ advanced ? "收起" : "展开" }}
-              <a-icon :type="advanced ? 'up' : 'down'" />
-            </a>
-          </span>
-        </a-form>
+    <a-card style="margin-top: 24px" :bordered="false">
+      <div>
+        <div>
+          <a-row justify="start" :gutter="[0, 32]">
+            <a-col :md="12" :sm="24">
+              问题内容：
+              <a-input
+                placeholder="请输入问题内容"
+                style="width: 150px"
+                v-model="content"
+              />
+            </a-col>
+            <a-col :md="12" :sm="24"> </a-col>
+          </a-row>
+        </div>
+        <span style="float: right; margin-top: 3px">
+          <a-button type="primary" @click="submitQuery">查询</a-button>
+          <a-button style="margin-left: 8px" @click="clearQuery">重置</a-button>
+        </span>
       </div>
+    </a-card>
+    <a-card style="margin-top: 24px" :bordered="false" title="问题列表">
       <a-table
         :columns="columns"
         :row-key="(record) => record.questionId"
         :data-source="dataSource"
-        :pagination="pagination"
         :loading="loading"
-        @change="handleTableChange"
       >
+        <!-- :pagination="pagination" -->
+        <!-- @change="handleTableChange" -->
+        <!-- > -->
         <a-button
           slot="edit"
           slot-scope="text, record"
@@ -140,36 +81,34 @@ export default {
       allQuestionNum: "",
       dataSource: [],
       columns: columns,
-      pagination: {
-        total: 0,
-        current: 1,
-        pageSize: 8,
-        defaultPageSize: 8,
-        showTotal: (total) => `共 ${total} 条数据`,
-        onShowSizeChange: (current, pageSize) => (this.pageSize = pageSize),
-      },
+      content:"",
+      // pagination: {
+      //   total: 0,
+      //   current: 1,
+      //   pageSize: 8,
+      //   defaultPageSize: 8,
+      //   showTotal: (total) => `共 ${total} 条数据`,
+      //   onShowSizeChange: (current, pageSize) => (this.pageSize = pageSize),
+      // },
     };
   },
   methods: {
-    toggleAdvanced() {
-      this.advanced = !this.advanced;
-    },
-    handleTableChange(e) {
-      console.log(e);
-      let that = this;
-      let current = e.current;
-      that.pagination.current = current;
-      questionList(current).then(function (res) {
-        console.log(res);
-        that.dataSource = res.data.data.questions.map((item) => {
-          let time = renderTime(item.createTime);
-          let date = time.slice(0, 10);
-          item.createTime = date;
-          return item;
-        });
-        console.log(this.orderData);
-      });
-    },
+    // handleTableChange(e) {
+    //   console.log(e);
+    //   let that = this;
+    //   let current = e.current;
+    //   that.pagination.current = current;
+    //   questionList(current).then(function (res) {
+    //     console.log(res);
+    //     that.dataSource = res.data.data.questions.map((item) => {
+    //       let time = renderTime(item.createTime);
+    //       let date = time.slice(0, 10);
+    //       item.createTime = date;
+    //       return item;
+    //     });
+    //     console.log(this.orderData);
+    //   });
+    // },
     toAnswer(record) {
       console.log("record", record);
       this.$router.push({
@@ -177,12 +116,9 @@ export default {
         params: record,
       });
     },
-  },
-  mounted() {
-    let that = this;
-    console.log("进入mounted");
-    //获取第一页的订单
-    questionList(1).then(function (res) {
+    submitQuery(){
+      let that = this
+    questionList(this.content).then(function (res) {
       console.log(res);
       // that.allOrderNum = res.data.otherData.page.rows;
       that.dataSource = res.data.data.questions.map((item) => {
@@ -192,7 +128,28 @@ export default {
         return item;
       });
       // that.pagination.total = res.data.otherData.page.rows;
-      console.log(that.orderData);
+      console.log(that.dataSource);
+    });
+    },
+    clearQuery(){
+      this.content = ""
+    }
+  },
+  mounted() {
+    let that = this;
+    console.log("进入mounted");
+    //获取第一页的订单
+    questionList("").then(function (res) {
+      console.log(res);
+      // that.allOrderNum = res.data.otherData.page.rows;
+      that.dataSource = res.data.data.questions.map((item) => {
+        let time = renderTime(item.createTime);
+        let date = time.slice(0, 10);
+        item.createTime = date;
+        return item;
+      });
+      // that.pagination.total = res.data.otherData.page.rows;
+      console.log(that.dataSource);
     });
   },
 };

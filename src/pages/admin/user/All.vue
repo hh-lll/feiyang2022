@@ -26,7 +26,7 @@
               <a-avatar
                 class="card-avatar"
                 slot="avatar"
-                :src="item.avatar"
+                :src="item.avatarUrl"
                 size="large"
               />
               <div class="meta-content" slot="description">
@@ -47,16 +47,10 @@
       <a-list-item slot="renderItem" slot-scope="item">
         <template>
           <a-card :hoverable="true">
-            <a-card-meta>
+            <a-card-meta @click="toDetailAdmin(item)">
               <div style="margin-bottom: 3px" slot="title">
                 {{ item.username }}
               </div>
-              <a-avatar
-                class="card-avatar"
-                slot="avatar"
-                :src="item.avatar"
-                size="large"
-              />
               <div class="meta-content" slot="description">
                 创建时间：{{ item.createtime }}
               </div>
@@ -98,23 +92,36 @@ export default {
             return item;
           }
         });
+        console.log(this.dataSource);
+        console.log(this.dataSourceAdmin);
       } else {
         this.dataSource = this.BdataSource;
       }
     },
     toDetail(item) {
-      console.log("toDetail", item);
       if (item.isStaff == 0) {
+      localStorage.removeItem("normaID");
+      localStorage.setItem("normaID",JSON.stringify(item.userId));
         this.$router.push({
           name: "用户详情",
-          params: item,
         });
       } else {
+      localStorage.removeItem("staffID");
+      localStorage.setItem("staffID", JSON.stringify(item.userId));
         this.$router.push({
           name: "技术员详情",
-          params: item,
         });
       }
+    },
+    
+    toDetailAdmin(item) {
+      localStorage.removeItem("adminInfo");
+      localStorage.setItem("adminInfo", JSON.stringify(item));
+      // console.log("toDetail",item);
+      this.$router.push({
+        name: "管理员详情",
+        // params: item
+      });
     },
   },
   mounted() {
@@ -142,11 +149,12 @@ export default {
             .replace(/phone_number/g, "phoneNumber")
             .replace(/is_allow/g, "isAllow")
             .replace(/post_count/g, "postCount")
+          .replace(/avatar_url/g, "avatarUrl")
         );
         console.log("查询完技术员", lineTocamel);
         that.dataSource = that.dataSource.concat(lineTocamel);
         console.log("合并后", that.dataSource);
-        that.BdataSource = that.dataSource.concat(lineTocamel);
+        that.BdataSource = that.BdataSource.concat(lineTocamel);
       });
     });
     adminList().then(function (res) {

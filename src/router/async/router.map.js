@@ -83,6 +83,15 @@ const routerMap = {
     // },
     component: () => import('@/pages/admin/question/QuestList'),
   },
+  questdetail: {
+    path: 'questdetail',
+    name: '问答详情',
+    invisible: true,
+    // authority: {
+    //   role: 'admin'
+    // },
+    component: () => import('@/pages/admin/question/QuestDetail')
+  },
   user: {
     path: 'user',
     name: '用户管理',
@@ -142,6 +151,20 @@ const routerMap = {
     name: '技术员详情',
     invisible: true,
     component: () => import('@/pages/admin/user/StaffDetail')
+  },
+
+  admindetail: {
+    path: 'admindetail',
+    name: '管理员详情',
+    invisible: true,
+    component: () => import('@/pages/admin/user/AdminDetail')
+  },
+
+  adminadd: {
+    path: 'adminadd',
+    name: '新增管理员',
+    invisible: true,
+    component: () => import('@/pages/admin/user/AdminAdd')
   },
 
   order: {

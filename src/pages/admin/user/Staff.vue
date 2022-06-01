@@ -9,14 +9,12 @@
         v-model="searchInput"
       />
       年份：
-      <a-select :default-value="year" style="width: 120px" @change="changeYear">
+      <a-select v-model="year" style="width: 120px" @change="changeYear">
         <a-select-option :value="item" :key="i" v-for="(item, i) in yearList">
           {{ item }}
         </a-select-option>
       </a-select>
-      <a-button @click="onSearch">搜索</a-button>
-        <!-- enterButton="搜索技术员"
-         -->
+      <a-button @click="onSearch" style="margin-left:20px">搜索</a-button>
     </div>
     <a-list
       :grid="{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }"
@@ -41,9 +39,9 @@
               <div class="meta-content" slot="description">
                 QQ号：{{ item.qqNumber }}
               </div>
-              <div class="meta-content" slot="description">
+              <!-- <div class="meta-content" slot="description">
                 接单：{{ item.isAllow }}
-              </div>
+              </div> -->
             </a-card-meta>
 
             <a
@@ -69,6 +67,7 @@ export default {
   name: "CardList",
   data() {
     return {
+      year:"",
       yearList: [],
       dataSource: [],
       BdataSource: [],
@@ -90,13 +89,26 @@ export default {
     },
     onSearch() {
       console.log(this.searchInput);
-      if (this.searchInput != "") {
+      console.log(this.year);
+      if (this.searchInput != "" && this.year != "") {
+        this.dataSource = this.BdataSource.filter((item) => {
+          if (item.username.includes(this.searchInput) && item.year == this.year) {
+            return item;
+          }
+        });
+      } else if(this.searchInput != ""){
         this.dataSource = this.BdataSource.filter((item) => {
           if (item.username.includes(this.searchInput)) {
             return item;
           }
         });
-      } else {
+      } else if(this.year != ""){
+        this.dataSource = this.BdataSource.filter((item) => {
+          if (item.year == this.year) {
+            return item;
+          }
+        });
+      }else{
         this.dataSource = this.BdataSource;
       }
     },

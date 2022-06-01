@@ -1,115 +1,18 @@
 <template>
   <a-card>
-    <div :class="advanced ? 'search' : null">
-      <a-form layout="horizontal">
-        <div :class="advanced ? null: 'fold'">
-          <a-row >
-          <a-col :md="8" :sm="24" >
-            <a-form-item
-              label="问答编号"
-              :labelCol="{span: 5}"
-              :wrapperCol="{span: 18, offset: 1}"
-            >
-              <a-input placeholder="请输入" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="8" :sm="24" >
-            <a-form-item
-              label="状态"
-              :labelCol="{span: 5}"
-              :wrapperCol="{span: 18, offset: 1}"
-            >
-              <a-select placeholder="请选择">
-                <a-select-option value="1">已回答</a-select-option>
-                <a-select-option value="2">未回答</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="8" :sm="24" >
-            <a-form-item
-              label="浏览次数"
-              :labelCol="{span: 5}"
-              :wrapperCol="{span: 18, offset: 1}"
-            >
-              <a-input-number style="width: 100%" placeholder="请输入" />
-            </a-form-item>
-          </a-col>
-        </a-row>
-          <a-row v-if="advanced">
-          <a-col :md="8" :sm="24" >
-            <a-form-item
-              label="提问日期"
-              :labelCol="{span: 5}"
-              :wrapperCol="{span: 18, offset: 1}"
-            >
-              <a-date-picker style="width: 100%" placeholder="请输入更新日期" />
-            </a-form-item>
-          </a-col>
-          
-          <a-col :md="8" :sm="24" >
-            <a-form-item
-              label="描述"
-              :labelCol="{span: 5}"
-              :wrapperCol="{span: 18, offset: 1}"
-            >
-              <a-input placeholder="请输入" />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        </div>
-        <span style="float: right; margin-top: 3px;">
-          <a-button type="primary">查询</a-button>
-          <a-button style="margin-left: 8px">重置</a-button>
-          <a @click="toggleAdvanced" style="margin-left: 8px">
-            {{advanced ? '收起' : '展开'}}
-            <a-icon :type="advanced ? 'up' : 'down'" />
-          </a>
-        </span>
-      </a-form>
-    </div>
     <div>
       <a-table
         :columns="columns"
-        :row-key="(record) => record.orderId"
-        :data-source="orderData"
-        :pagination="pagination"
+        :row-key="(record) => record.postId"
+        :data-source="postData"
         :loading="loading"
-        @change="handleTableChange"
       >
-        <a-progress
-          slot="status"
-          slot-scope="text, record"
-          :percent="
-            record.status == 0
-              ? 0
-              : record.status == 1
-              ? 30
-              : record.status == 2
-              ? 75
-              : 100
-          "
-          :strokeColor="
-            record.status == 0
-              ? 'white'
-              : record.status == 1
-              ? '#F4DF00'
-              : record.status == 2
-              ? '#41A5EE'
-              : '#52C41A'
-          "
-          style="width: 180px"
-        >
-          <template #format="percent">
-            <span style="color: red" v-if="percent == 0">中止</span>
-            <span style="color: #f4df00" v-else-if="percent == 30">等待中</span>
-            <span style="color: #41a5ee" v-else-if="percent == 75">进行中</span>
-            <span style="color: #52c41a" v-else>已完成</span>
-          </template>
-        </a-progress>
+        <!-- :pagination="pagination"
+        @change="handleTableChange" -->
         <a-button
-          slot="edit"
+          slot="action"
           slot-scope="text, record"
-          @click="() => toOrderDetail(record)"
+          @click="() => toPostDetail(record)"
         >
           详情
         </a-button>
@@ -119,38 +22,30 @@
 </template>
 
 <script>
-import { questionandpostList } from "@/services/dataSource";
+import { postList } from "@/services/dataSource";
+import { mapGetters } from "vuex";
+import { renderTime } from "@/utils/render-time";
 const columns = [
   {
-    title: '问答编号',
-    dataIndex: 'no'
+    title: '回答编号',
+    dataIndex: 'postId'
   },
   {
     title: '发布时间',
-    dataIndex: 'updatedAt',
-    sorter: true
+    dataIndex: 'createTime',
   },
   {
-    title: '问题内容',
-    dataIndex: 'description',
-    scopedSlots: { customRender: 'description' },
-    sorter: true
+    title: '问题编号',
+    dataIndex: 'relatedQuestionId',
+    sorter: (a, b) => a.relatedQuestionId - b.relatedQuestionId
   },
   {
-    title: '回答内容',
-    dataIndex: 'description',
-    scopedSlots: { customRender: 'description' }
-  },
-  {
-    title: '回答技术员',
-    dataIndex: 'callNo',
-    scopedSlots: { customRender: 'description' }
+    title: '访问数',
+    dataIndex: 'visitCount',
   },
   {
     title: '审核状态',
     dataIndex: 'status',
-    needTotal: true,
-    slots: {title: 'statusTitle'}
   },
   {
     title: '操作',
@@ -158,22 +53,41 @@ const columns = [
   }
 ]
 
-const dataSource = []
 
 export default {
   name: 'QueryList',
+  computed: {
+    ...mapGetters("account", ["user"]),
+  },
   // components: {StandardTable},
   data () {
     return {
       columns: columns,
-      dataSource: dataSource,
+      postData: [],
     }
   },
   methods: {
+    toPostDetail(record){
+      localStorage.removeItem("postID");
+      localStorage.setItem("postID", JSON.stringify(record.postId));
+      localStorage.removeItem("postStatus");
+      localStorage.setItem("postStatus", JSON.stringify(record.status));
+      console.log("record", record);
+      this.$router.push({
+        name: "问答详情",
+        // params: record,
+      });
+    }
   },
   mounted(){
-    questionandpostList(1).then((res) => {
+    let that = this
+    postList(this.user.userId).then((res) => {
+      that.postData = res.data.data.staff.map((item)=>{
+        item.createTime=renderTime(item.createTime)
+        return item;
+      })
       console.log(res);
+      console.log(that.postData);
     }).catch((err) => {
       console.log(err);
     });

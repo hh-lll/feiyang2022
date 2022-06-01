@@ -1,4 +1,4 @@
-import {USER_UPDATE,STAFF_UPDATE,STAFF_ADD,STAFF_YEAR} from './api'
+import {ADMIN_ADD,USER_UPDATE,STAFF_UPDATE,STAFF_ADD,STAFF_YEAR} from './api'
 import {METHOD, request} from '@/utils/request'
 import Qs from 'qs'
 
@@ -52,6 +52,16 @@ export async function staffAdd(userId) {
     userId: userId,
   })
 }
+
+
+export async function adminAdd(username,password) {
+  return request(ADMIN_ADD, METHOD.POST, {
+    username: username,
+    password:password
+  })
+}
+
+
 // export async function staffUpdate(userId,receiveInterval,tips) {
 //   return request(STAFF_UPDATE, METHOD.GET, {
 //     userId: userId,

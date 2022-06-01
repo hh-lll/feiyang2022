@@ -5,9 +5,14 @@
       :dataSource="dataSource"
     >
       <a-list-item slot="renderItem" slot-scope="item">
-        <template>
+        <template v-if="item.add">
+          <a-button class="new-btn" type="dashed" @click="addAdmin">
+            <a-icon type="plus" />新增管理员
+          </a-button>
+        </template>
+        <template v-else>
           <a-card :hoverable="true">
-            <a-card-meta>
+            <a-card-meta @click="toDetail(item)">
               <div style="margin-bottom: 3px" slot="title">
                 {{ item.username }}
               </div>
@@ -41,11 +46,30 @@ export default {
       console.log(res);
       that.dataSource = res.data.data.map((item) => {
         let time = renderTime(item.createtime);
-        let date = time.slice(0,10)
+        let date = time.slice(0, 10);
         item.createtime = date;
         return item;
       });
+      that.dataSource.unshift({
+        add: true,
+      });
     });
+  },
+  methods: {
+    toDetail(item) {
+      localStorage.removeItem("adminInfo");
+      localStorage.setItem("adminInfo", JSON.stringify(item));
+      // console.log("toDetail",item);
+      this.$router.push({
+        name: "管理员详情",
+        // params: item
+      });
+    },
+    addAdmin() {
+      this.$router.push({
+        name: "新增管理员",
+      });
+    },
   },
 };
 </script>
@@ -59,7 +83,7 @@ export default {
 .new-btn {
   border-radius: 2px;
   width: 100%;
-  height: 187px;
+  height: 109px;
 }
 .meta-content {
   position: relative;

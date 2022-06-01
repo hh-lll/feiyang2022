@@ -222,7 +222,6 @@ import DetailList from "@/components/tool/DetailList";
 import { renderTime } from "@/utils/render-time";
 import { staffAllow } from "@/services/edituser";
 import { userInfoEdit, staffInterval, staffTip } from "@/services/edituser";
-import { staffUpdate } from "@/services/edituser";
 import { getUserInfo } from "@/services/user";
 import { orderForUser } from "@/services/dataSource";
 const DetailListItem = DetailList.Item;
@@ -344,16 +343,6 @@ export default {
         } else {
           this.$message.success("已允许该技术员接单");
         }
-      });
-    },
-    subTechUpdate(userId) {
-      staffUpdate(
-        userId,
-        21,
-        "新华社天津5月19日电（记者白佳丽）5月19日上午，天津市第二中级人民法院对公益诉讼起诉人天津市人民检察院第二分院诉被告张某侵害著名农业科"
-      ).then((res) => {
-        console.log(res);
-        // this.userData.isStaff = 1;
       });
     },
     handleTableChange(e) {
