@@ -30,4 +30,6 @@ module.exports = {
   ADMIN_ORDER_LIST: `${FY_URL}/admin/queryOrder`,
   POST_ALL: `${FY_URL}/post/all`,
   POST_INFO: `${FY_URL}/post/get`,
+  ORDER_CANCEL: `${FY_URL}/order/cancel`,
+  
 }

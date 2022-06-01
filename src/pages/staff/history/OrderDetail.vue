@@ -7,11 +7,7 @@
       <detail-list-item term="结束时间">{{orderInfo.closeTime?orderInfo.closeTime:'无'}}</detail-list-item>
       <detail-list-item term="维修类型">{{orderInfo.repairType}}</detail-list-item>
     </detail-list>
-    <template slot="action">
-      <!-- <a-button type="primary" @click="clickCancelOrder">取消订单</a-button> -->
-    
-      <a-button type="primary" @click="clickCancelOrder" :disabled="orderInfo.status==0">取消订单</a-button>
-    </template>
+
     <a-card :bordered="false" title="维修进度">
       <a-steps :current="orderInfo.status" progress-dot :direction="isMobile ? 'vertical' : 'horizontal'">
         <a-step title="创建订单">
@@ -59,7 +55,6 @@
 </template>
 
 <script>
-import { cancelOrder } from "@/services/order";
 import { renderTime } from "@/utils/render-time";
 import PageLayout from '@/layouts/PageLayout'
 import DetailList from '@/components/tool/DetailList'
@@ -155,16 +150,8 @@ export default {
       this.deviceInfo.type = params.device_type;
       this.deviceInfo.brand = params.device_brand;
     },
-    clickCancelOrder(){
-      cancelOrder(this.orderInfo.orderId).then((res)=>{
-        console.log(res);
-        if(res.data.message=="取消成功"){
-          this.orderInfo.status=0;
-          this.$message.success("取消订单成功！");
-        }else if(res.data.message=="该订单已经取消，请勿重复操作！"){
-          this.$message.warn("该订单已经取消，请勿重复操作");
-        }
-      })
+    cancelOrder(){
+      
     }
   },
 }

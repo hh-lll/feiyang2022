@@ -71,7 +71,7 @@
               </a-card-grid>
               <a-card-grid>
                 <a-card :bordered="false" :body-style="{ padding: 0 }">
-                  <head-info title="全局年份" content="56" />
+                  <head-info title="全局年份" :content="year" />
                 </a-card>
               </a-card-grid>
               <a-card-grid>
@@ -98,9 +98,9 @@
             :body-style="{ padding: 0 }"
           >
             <div class="item-group">
-              <a>问答审核</a>
-              <a>用户管理</a>
-              <a>订单管理</a>
+              <a @click="toSH">问答审核</a>
+              <a @click="toYH">用户管理</a>
+              <a @click="toDD">订单管理</a>
             </div>
           </a-card>
           <a-card
@@ -123,7 +123,7 @@
             <div class="setting">
               时间年份：
               <a-select
-                :default-value="year"
+                :value="year"
                 style="width: 120px"
                 @change="changeYear"
               >
@@ -191,6 +191,7 @@ export default {
       globalData: {},
       globalYear: "",
       yearList: [],
+      year:2022,
       globalOnOff: true,
       limit:0,
       visitor:0,
@@ -230,8 +231,27 @@ export default {
     changeOnOff(){
 
     },
+    toSH(){
+      this.$router.push({
+        name: "问答审批",
+        // params: record,
+      });
+    },
+    toYH(){
+      this.$router.push({
+        name: "普通用户",
+        // params: record,
+      });
+    },
+    toDD(){
+      this.$router.push({
+        name: "订单列表",
+        // params: record,
+      });
+    },
     changeYear(year){
       console.log(year);
+      this.year = year;
       staffYear(year).then((res)=>{
         if(res.status == 200){
           this.$message.success("已成功将技术员年份设置为"+year)
