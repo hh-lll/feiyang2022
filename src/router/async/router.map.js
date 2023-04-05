@@ -10,7 +10,7 @@ const routerMap = {
   login: {
     authority: '*',
     path: '/login',
-    component: () => import('@/pages/login')
+    component: () => import('@/pages/staff/question/Answer')
   },
   root: {
     path: '/',
@@ -95,7 +95,7 @@ const routerMap = {
   user: {
     path: 'user',
     name: '用户管理',
-    icon: 'table',
+    icon: 'user',
     component: view.page
   },
   userlist: {
@@ -198,6 +198,21 @@ const routerMap = {
     // },
     component: () => import('@/pages/admin/order/OrderDetail')
   },
+  announcement:{
+    path: 'announcement',
+    name:'公告管理',
+    icon: 'notification',
+    component: () => import('@/pages/admin/announcement/Announcement')
+  },
+  orderdetails: {
+    path: 'orderdetails',
+    name: '技术员订单详情',
+    invisible: true,
+    // authority: {
+    //   role: 'admin'
+    // },
+    component: () => import('@/pages/staff/history/OrderDetail')
+  },
   //技术员页面
   history: {
     path: 'history',
@@ -244,7 +259,7 @@ const routerMap = {
   answer: {
     path: 'answer',
     name: '回答问题',
-    invisible: true,
+    // invisible: true,
     // authority: {
     //   role: 'staff'
     // },

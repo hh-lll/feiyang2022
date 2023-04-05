@@ -1,24 +1,21 @@
 import {
   ORDER_QUERY,
   USER_LIST,
-  ADMIN_DASH_DATA,
   QANDP_LIST,
   QUESTION_ALL,
   EXAMINE_LIST,
   ADMIN_ORDER_LIST,
   POST_ALL,
-  POST_INFO
+  POST_INFO,
+  GET_TIPS,
+  GET_STAFFYEAR
 } from './api'
 import {
   METHOD,
   request
 } from '@/utils/request'
 
-export async function adminDashData(year) {
-  return request(ADMIN_DASH_DATA, METHOD.GET, {
-    year: year
-  })
-}
+
 
 export async function orderList(current,repairType,status,staffName,userName) {
   return request(ADMIN_ORDER_LIST, METHOD.GET, {
@@ -83,6 +80,13 @@ export async function getpostInfo(postId) {
     post_id: postId,
   });
 }
+export async function getTip() {
+  return request(GET_TIPS, METHOD.GET);
+}
+export async function getStaffyear() {
+  return request(GET_STAFFYEAR, METHOD.GET);
+}
+
 export default {
   orderList,
   normalList,

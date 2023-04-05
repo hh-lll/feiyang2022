@@ -76,12 +76,11 @@
               </a-card-grid>
               <a-card-grid>
                 <a-card :bordered="false" :body-style="{ padding: 0 }">
-                  <head-info title="全局配额" content="56" />
+                  <head-info title="全局配额" :content="limit" />
                 </a-card>
               </a-card-grid>
             </div>
           </a-card>
-          
         </a-col>
         <a-col
           style="padding: 0 12px"
@@ -108,25 +107,22 @@
             :title="$t('globalsetting')"
             :bordered="false"
           >
-            <div class="setting">配额状态:</div>
+            <div class="setting">
+              配额状态：
+              <span :class="left > 10 ? 'green' : left > 0 ? 'yellow' : 'red'"
+                >&nbsp;&nbsp;报修剩余量&nbsp;&nbsp;{{ left }}&nbsp;&nbsp;</span
+              >
+            </div>
             <div class="setting">
               全局开关: &nbsp;
-              <a-select
-                default-value="on"
-                style="width: 120px"
-                @change="changeOnOff"
-              >
-                <a-select-option value="on"> 全部开启 </a-select-option>
-                <a-select-option value="off"> 全部关闭 </a-select-option>
+              <a-select style="width: 120px" @change="changeOnOff">
+                <a-select-option value="1"> 全部开启 </a-select-option>
+                <a-select-option value="0"> 全部关闭 </a-select-option>
               </a-select>
             </div>
             <div class="setting">
               时间年份：
-              <a-select
-                :value="year"
-                style="width: 120px"
-                @change="changeYear"
-              >
+              <a-select :value="year" style="width: 120px" @change="changeYear">
                 <a-select-option
                   :value="item"
                   :key="i"
@@ -146,16 +142,6 @@
               />
               tip: 确认后请回车
             </div>
-            <div class="setting">
-              每日游客：
-              <a-input-number
-                id="inputNumber"
-                v-model="visitor"
-                :min="0"
-                @pressEnter="pressVisitor"
-              />
-              tip: 确认后请回车
-            </div>
           </a-card>
         </a-col>
       </a-row>
@@ -166,7 +152,14 @@
 <script>
 import HeadInfo from "@/components/tool/HeadInfo";
 import PageLayout from "@/layouts/PageLayout";
-import { adminDashData } from "@/services/dataSource";
+import { getStaffyear } from "@/services/dataSource";
+import {
+  getConfyear,
+  adminDashData,
+  getConflimit,
+  setConfturn,
+  setConflimit,
+} from "@/services/conf";
 import { staffYear } from "@/services/edituser";
 import { mapState } from "vuex";
 // import func from "vue-editor-bridge";
@@ -191,10 +184,11 @@ export default {
       globalData: {},
       globalYear: "",
       yearList: [],
-      year:2022,
+      year: null,
       globalOnOff: true,
-      limit:0,
-      visitor:0,
+      limit: null,
+      visitor: 0,
+      left: 0,
     };
   },
   computed: {
@@ -202,69 +196,111 @@ export default {
     ...mapState("setting", ["lang"]),
   },
   created() {
-    let nowdate = new Date();
-    this.year = nowdate.getFullYear();
+    // let nowdate = new Date();
+    // this.year = nowdate.getFullYear();
   },
   mounted() {
-    let nowdate = new Date();
-    let year = nowdate.getFullYear();
-    year++;
-    console.log(year);
-    for (let i = 0; i < 5; i++) {
-      this.yearList.push(year--);
-      console.log("第" + i + "个" + this.yearList[i]);
-    }
-    adminDashData(new Date().getFullYear()).then((res) => {
-      let data = res.data.data
-      this.ALLStaffs = data.ALLStaffs
-      this.TotalVips = data.TotalFeedback
-      this.TotalFeedback = data.TotalFeedback
-      this.TotalAdmin = data.TotalAdmin
-      this.ThisWeek = data.ThisWeek
-      this.ThisMonth = data.ThisMonth
-      this.AllUsers = data.AllUsers
-      this.TodayOrder = data.TodayOrder
-      this.TotalQuestion = data.TotalQuestion
+    // let nowdate = new Date();
+    // let year = nowdate.getFullYear();
+    // year++;
+    // console.log(year);
+    // for (let i = 0; i < 5; i++) {
+    //   this.yearList.push(year--);
+    //   console.log("第" + i + "个" + this.yearList[i]);
+    // }
+    getStaffyear().then((res) => {
+      let yearL = res.data.data;
+      yearL.map((item) => {
+        console.log("itemitemitemitem", item);
+        this.yearList.push(item.year);
+      });
     });
+    getConflimit().then((res) => {
+      this.limit = res.data.data;
+    });
+    getConfyear().then((res) => {
+      console.log(res);
+      this.year = res.data.data;
+      adminDashData(this.year).then((res) => {
+        let data = res.data.data;
+        this.ALLStaffs = data.ALLStaffs;
+        this.TotalVips = data.TotalFeedback;
+        this.TotalFeedback = data.TotalFeedback;
+        this.TotalAdmin = data.TotalAdmin;
+        this.ThisWeek = data.ThisWeek;
+        this.ThisMonth = data.ThisMonth;
+        this.AllUsers = data.AllUsers;
+        this.TodayOrder = data.TodayOrder;
+        this.TotalQuestion = data.TotalQuestion;
+        this.left = this.limit - this.TodayOrder;
+      });
+    });
+    console.log("this.year this.year this.year", this.year);
   },
-  methods:{
-    changeOnOff(){
-
+  methods: {
+    changeOnOff(turn) {
+      setConfturn(turn).then((res) => {
+        console.log("setConfturnsetConfturnsetConfturnsetConfturn", res);
+        if (res.status == 200) {
+          this.$message.success("系统开关状态改变成功！");
+        }
+      });
     },
-    toSH(){
+    toSH() {
       this.$router.push({
         name: "问答审批",
         // params: record,
       });
     },
-    toYH(){
+    toYH() {
       this.$router.push({
         name: "普通用户",
         // params: record,
       });
     },
-    toDD(){
+    toDD() {
       this.$router.push({
         name: "订单列表",
         // params: record,
       });
     },
-    changeYear(year){
+    changeYear(year) {
       console.log(year);
       this.year = year;
-      staffYear(year).then((res)=>{
-        if(res.status == 200){
-          this.$message.success("已成功将技术员年份设置为"+year)
+      let that = this;
+      staffYear(year).then((res) => {
+        if (res.status == 200) {
+          this.$message.success("已成功将技术员年份设置为" + year);
+
+          adminDashData(year).then((res) => {
+            let data = res.data.data;
+            that.ALLStaffs = data.ALLStaffs;
+            that.TotalVips = data.TotalFeedback;
+            that.TotalFeedback = data.TotalFeedback;
+            that.TotalAdmin = data.TotalAdmin;
+            that.ThisWeek = data.ThisWeek;
+            that.ThisMonth = data.ThisMonth;
+            that.AllUsers = data.AllUsers;
+            that.TodayOrder = data.TodayOrder;
+            that.TotalQuestion = data.TotalQuestion;
+            that.left = that.limit - that.TodayOrder;
+          });
         }
-      })
+      });
     },
-    pressLimit(){
-      console.log("blurLimitblurLimitblurLimitblurLimit",this.limit);
+    pressLimit() {
+      let that = this;
+      console.log("blurLimitblurLimitblurLimitblurLimit", this.limit);
+      setConflimit(that.limit).then((res) => {
+        if (res.status == 200) {
+          this.$message.success("已成功将报修限额设置为" + that.limit);
+          getConflimit().then((res) => {
+            that.left = res.data.data - that.TodayOrder;
+          });
+        }
+      });
     },
-    pressVisitor(){
-      console.log("blurLimitblurLimitblurLimitblurLimit",this.visitor);
-    }
-  }
+  },
 };
 </script>
 
@@ -272,5 +308,17 @@ export default {
 @import "index";
 .setting {
   height: 50px;
+}
+.green {
+  background-color: #01ab34;
+  color: white;
+}
+.yellow {
+  background-color: #f9ad08;
+  color: white;
+}
+.red {
+  background-color: #e81010;
+  color: white;
 }
 </style>

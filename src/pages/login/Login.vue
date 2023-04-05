@@ -161,7 +161,8 @@ export default {
         {
           router: "root",
           children: [
-            { router: "dashboard", children: ["workplace"] },
+            // { router: "dashboard", children: ["workplace"] },
+            { router: "workplace"},
             { router: "QandA", children: ["examine", "QandAlist", "questdetail"] },
             {
               router: "user",
@@ -174,6 +175,7 @@ export default {
               ],
             },
             { router: "order", children: ["ongoingorder", "orderlist", "orderdetail"] },
+            { router:"announcement"}
           ],
         },
       ],
@@ -186,7 +188,7 @@ export default {
             { router: "answer" },
             {
               router: "history",
-              children: ["personalorder", "personalpost", "orderdetail",  "questdetail"],
+              children: ["personalorder", "personalpost", "orderdetails",  "questdetail"],
             },
           ],
         },
@@ -253,7 +255,8 @@ export default {
         });
         console.log("this.routerAdminrouterAdminrouterAdminrouterAdminrouterAdminrouterAdminrouterAdmin",this.routerAdmin);
         loadRoutes(this.routerAdmin);
-        this.$router.push("/dashboard/workplace");
+        // this.$router.push("/dashboard/workplace");
+        this.$router.push("/workplace");
         this.$message.success(loginRes.message, 3);
         // 获取路由配置
         // getRoutesConfig().then((result) => {

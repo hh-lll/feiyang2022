@@ -31,5 +31,12 @@ module.exports = {
   POST_ALL: `${FY_URL}/post/all`,
   POST_INFO: `${FY_URL}/post/get`,
   ORDER_CANCEL: `${FY_URL}/order/cancel`,
+  CONF_YEAR: `${FY_URL}/conf/year`,
+  CONF_GETLIMIT: `${FY_URL}/conf/getLimit`,
+  CONF_TURN: `${FY_URL}/conf/turn`,
+  CONF_SETLIMIT: `${FY_URL}/conf/setLimit`,
+  UPDATE_TIPS: `${FY_URL}/conf/updateGlobalTips`,
+  GET_TIPS: `${FY_URL}/conf/selectTips`,
+  GET_STAFFYEAR: `${FY_URL}/staff/yearInfo`,
   
 }

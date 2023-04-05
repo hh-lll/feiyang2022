@@ -8,31 +8,31 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const productionGzipExtensions = ['js', 'css']
 const isProd = process.env.NODE_ENV === 'production'
 
-const assetsCDN = {
-  // webpack build externals
-  externals: {
-    vue: 'Vue',
-    'vue-router': 'VueRouter',
-    vuex: 'Vuex',
-    axios: 'axios',
-    nprogress: 'NProgress',
-    clipboard: 'ClipboardJS',
-    '@antv/data-set': 'DataSet',
-    'js-cookie': 'Cookies'
-  },
-  css: [
-  ],
-  js: [
-    '//cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js',
-    '//cdn.jsdelivr.net/npm/vue-router@3.3.4/dist/vue-router.min.js',
-    '//cdn.jsdelivr.net/npm/vuex@3.4.0/dist/vuex.min.js',
-    '//cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js',
-    '//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js',
-    '//cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js',
-    '//cdn.jsdelivr.net/npm/@antv/data-set@0.11.4/build/data-set.min.js',
-    '//cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.min.js'
-  ]
-}
+// const assetsCDN = {
+//   // webpack build externals
+//   externals: {
+//     vue: 'Vue',
+//     'vue-router': 'VueRouter',
+//     vuex: 'Vuex',
+//     axios: 'axios',
+//     nprogress: 'NProgress',
+//     clipboard: 'ClipboardJS',
+//     '@antv/data-set': 'DataSet',
+//     'js-cookie': 'Cookies'
+//   },
+//   css: [
+//   ],
+//   js: [
+//     'https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js',
+//     'https://cdn.jsdelivr.net/npm/vue-router@3.3.4/dist/vue-router.min.js',
+//     'https://cdn.jsdelivr.net/npm/vuex@3.4.0/dist/vuex.min.js',
+//     'https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js',
+//     'https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js',
+//     'https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js',
+//     'https://cdn.jsdelivr.net/npm/@antv/data-set@0.11.4/build/data-set.min.js',
+//     'https://cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.min.js'
+//   ]
+// }
 
 module.exports = {
   devServer: {
@@ -80,7 +80,7 @@ module.exports = {
     }
     // if prod, add externals
     if (isProd) {
-      config.externals = assetsCDN.externals
+      // config.externals = assetsCDN.externals
     }
   },
   chainWebpack: config => {
@@ -93,13 +93,13 @@ module.exports = {
         })
     }
     // 生产环境下使用CDN
-    if (isProd) {
-      config.plugin('html')
-        .tap(args => {
-          args[0].cdn = assetsCDN
-        return args
-      })
-    }
+    // if (isProd) {
+    //   config.plugin('html')
+    //     .tap(args => {
+    //       // args[0].cdn = assetsCDN
+    //     return args
+    //   })
+    // }
   },
   css: {
     loaderOptions: {
@@ -111,7 +111,7 @@ module.exports = {
       }
     }
   },
-  publicPath: process.env.VUE_APP_PUBLIC_PATH,
+  publicPath: './',
   outputDir: 'dist',
   assetsDir: 'static',
   productionSourceMap: false

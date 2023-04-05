@@ -129,7 +129,7 @@ export default {
       record.staff_qq_number = this.user.qqNumber;
       console.log("record", record);
       this.$router.push({
-        name: "订单详情",
+        name: "技术员订单详情",
         params: record,
       });
     },

@@ -63,6 +63,7 @@
 <script>
 import { staffList } from "@/services/dataSource";
 import { staffAllow } from "@/services/edituser";
+import { getStaffyear } from "@/services/dataSource";
 export default {
   name: "CardList",
   data() {
@@ -125,14 +126,21 @@ export default {
   mounted() {
     let that = this;
     console.log("进入mounted");
-    let nowdate = new Date();
-    let year = nowdate.getFullYear();
-    year++;
-    console.log(year);
-    for (let i = 0; i < 5; i++) {
-      this.yearList.push(year--);
-      console.log("第" + i + "个" + this.yearList[i]);
-    }
+    // let nowdate = new Date();
+    // let year = nowdate.getFullYear();
+    // year++;
+    // console.log(year);
+    // for (let i = 0; i < 5; i++) {
+    //   this.yearList.push(year--);
+    //   console.log("第" + i + "个" + this.yearList[i]);
+    // }
+    getStaffyear().then((res) => {
+      let yearL = res.data.data;
+      yearL.map((item) => {
+        console.log("itemitemitemitem", item);
+        this.yearList.push(item.year);
+      });
+    });
     staffList().then(function (res) {
       console.log(res);
       let lineTocamel = JSON.parse(

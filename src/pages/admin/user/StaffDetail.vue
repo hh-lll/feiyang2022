@@ -118,6 +118,7 @@
               v-model="staffData.receiveInterval"
               style="width: 120px"
               :min="0"
+              :max="5"
               size="small"
             ></a-input-number
             ><a-button

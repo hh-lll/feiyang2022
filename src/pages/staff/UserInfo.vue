@@ -105,6 +105,7 @@
               v-model="staffData.receiveInterval"
               style="width: 120px"
               :min="0"
+              :max="5"
               size="small"
             ></a-input-number
             ><a-button
@@ -158,8 +159,8 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { renderTime } from "@/utils/render-time";
-import { getUserInfo } from "@/services/user";
+// import { renderTime } from "@/utils/render-time";
+// import { getUserInfo } from "@/services/user";
 import DetailList from "@/components/tool/DetailList";
 import { userInfoEdit, staffInterval, staffTip } from "@/services/edituser";
 const DetailListItem = DetailList.Item;
@@ -196,7 +197,7 @@ export default {
       staffInterval(userId, receiveInterval).then((res) => {
         console.log(res);
         if (res.status == 200) {
-          this.$message.success("修改技术员接单间隔成功！");
+          this.$message.success("接单间隔修改成功！");
         }
       });
     },
@@ -207,7 +208,7 @@ export default {
       staffTip(userId, tips).then((res) => {
         console.log(res);
         if (res.status == 200) {
-          this.$message.success("修改技术员简介成功！");
+          this.$message.success("简介修改成功！");
         }
       });
     },
@@ -221,22 +222,24 @@ export default {
       let isBan = this.userData.isBan;
       userInfoEdit(userId, username, qqNumber, phoneNumber, email, isBan).then(
         (res) => {
-          console.log(res);
+        if (res.status == 200) {
+          this.$message.success("个人信息修改成功！");
+        }
         }
       );
     },
     
   },
   mounted() {
-    console.log("进入mounted");
-    console.log(this.user);
-    let userId = this.user.userId;
-    getUserInfo(userId).then((res) => {
-      this.staffData = res.data.data.staffInfo;
-      this.userData = res.data.data.userInfo;
-      this.userData.createTime = renderTime(this.userData.createTime);
-      console.log(this.userData);
-    });
+    // console.log("进入mounted");
+    // console.log(this.user);
+    // let userId = this.user.userId;
+    // // getUserInfo(userId).then((res) => {
+    // //   this.staffData = res.data.data.staffInfo;
+    // //   this.userData = res.data.data.userInfo;
+    // //   this.userData.createTime = renderTime(this.userData.createTime);
+    // //   console.log(this.userData);
+    // // });
   },
 };
 </script>
